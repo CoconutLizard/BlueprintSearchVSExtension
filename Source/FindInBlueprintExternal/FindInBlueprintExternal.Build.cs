@@ -6,27 +6,13 @@ public class FindInBlueprintExternal : ModuleRules
 {
 	public FindInBlueprintExternal(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PrivateIncludePaths.Add("FindInBlueprintExternal/Classes");
+		PrivateIncludePaths.Add("FindInBlueprintExternal/Classes");			
+		
 
-		PublicIncludePaths.AddRange(
-			new string[] {
-				// ... add public include paths required here ...
-			}
-			);
-				
-		
-		PrivateIncludePaths.AddRange(
-			new string[] {
-				// ... add other private include paths required here ...
-			}
-			);
-			
-		
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
 				"Core",
-				// ... add other public dependencies that you statically link with here ...
 			}
 			);
 			
@@ -43,16 +29,8 @@ public class FindInBlueprintExternal : ModuleRules
 				"SlateCore",
 				"GameProjectGeneration",
 				"Kismet"
-				// ... add private dependencies that you statically link with here ...	
 			}
 			);
 		
-		
-		DynamicallyLoadedModuleNames.AddRange(
-			new string[]
-			{
-				// ... add any modules that your module loads dynamically here ...
-			}
-			);
 	}
 }

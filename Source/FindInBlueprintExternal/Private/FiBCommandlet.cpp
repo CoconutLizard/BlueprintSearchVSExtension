@@ -1,43 +1,30 @@
-#include "FiBCommandlet.h"
-#include "AssetRegistryModule.h"
+#include "Runtime/AssetRegistry/Public/AssetRegistry/AssetRegistryModule.h"
 #include "Developer/AssetTools/Public/AssetToolsModule.h"
+#include "FiBCommandlet.h"
 #include "FindInBlueprintManager.h"
-//#include "SharedPointer.h"
 
 int32 UFiBCommandlet::Main(const FString& Params)
 {
-	const TCHAR* Cmd = *Params;
 	GIsRunning = true;
+	const FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
+	AssetRegistryModule.Get().SearchAllAssets(true);
 
-	FAssetRegistryModule* AssetRegistryModule = &FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
-
-	AssetRegistryModule->Get().SearchAllAssets(true);
-
-	FString SearchValue = FParse::Token(Cmd, false);
+	TArray<FString> Tokens;
+	TArray<FString> Switches;
+	ParseCommandLine(*Params, Tokens, Switches);
 	TArray<FSearchResult> OutItemsFound;
 	const FStreamSearchOptions SearchOptions;
 
-	while (!SearchValue.IsEmpty()) {
-
-		if (SearchValue.Equals("-run=FiB"))
+	for (const FString& SearchValue : Tokens) 
+	{
+		FStreamSearch StreamSearch(SearchValue, SearchOptions);
+		while (!StreamSearch.IsComplete())
 		{
-
-			SearchValue = FParse::Token(Cmd, false);
-
+			FFindInBlueprintSearchManager::Get().Tick(0.0);
 		}
 
-		FStreamSearch StreamSearch(SearchValue, SearchOptions);
-
-		while (!StreamSearch.IsComplete()) FFindInBlueprintSearchManager::Get().Tick(.0);
-
 		StreamSearch.GetFilteredItems(OutItemsFound);
-
-		SearchValue = FParse::Token(Cmd, false);
-
 	}
 
-
-	UE_LOG(LogTemp, Warning, TEXT("Test text"));
-
-    return int32();
+    return 0;
 }

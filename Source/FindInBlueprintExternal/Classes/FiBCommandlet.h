@@ -6,12 +6,12 @@
 #include "FiBCommandlet.generated.h"
 
 UCLASS(MinimalAPI)
-class UFiBCommandlet : public UCommandlet
+class UFiBCommandlet final : public UCommandlet
 {
 	GENERATED_BODY()
 
-		//~ Begin UCommandlet Interface
-		virtual int32 Main(const FString& Params) override;
+	//~ Begin UCommandlet Interface
+	virtual int32 Main(const FString& Params) override;
 	//~ End UCommandlet Interface
 
 };
