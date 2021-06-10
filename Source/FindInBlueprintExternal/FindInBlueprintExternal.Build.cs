@@ -20,16 +20,16 @@ public class FindInBlueprintExternal : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core",
-				"CoreUObject",
-				"ApplicationCore",
-				"Engine",
-				"UnrealEd",
+                "ApplicationCore",
+                "Engine",
+                "Core",
+                "CoreUObject",
+                "GameProjectGeneration",
+				"Kismet",
 				"Slate",
-				"SlateCore",
-				"GameProjectGeneration",
-				"Kismet"
-			}
+                "SlateCore",
+                "UnrealEd"
+          	}
 			);
 		
 	}
