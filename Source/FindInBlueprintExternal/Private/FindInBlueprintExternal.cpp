@@ -1,8 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "FindInBlueprintExternal.h"
-
-#include "Modules/ModuleManager.h"
+#include "FindInBlueprintExternal/Public/FindInBlueprintExternal.h"
 
 #define LOCTEXT_NAMESPACE "FFindInBlueprintExternalModule"
 

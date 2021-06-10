@@ -1,7 +1,8 @@
-#include "Runtime/AssetRegistry/Public/AssetRegistry/AssetRegistryModule.h"
-#include "Developer/AssetTools/Public/AssetToolsModule.h"
-#include "FiBCommandlet.h"
-#include "FindInBlueprintManager.h"
+#include "FindInBlueprintExternal/Classes/FiBCommandlet.h"
+#include <Developer/AssetTools/Public/AssetToolsModule.h>
+#include <Editor/Kismet/Public/FindInBlueprintManager.h>
+#include <Runtime/AssetRegistry/Public/AssetRegistry/AssetRegistryModule.h>
+
 
 int32 UFiBCommandlet::Main(const FString& Params)
 {
@@ -15,7 +16,7 @@ int32 UFiBCommandlet::Main(const FString& Params)
 	TArray<FSearchResult> OutItemsFound;
 	const FStreamSearchOptions SearchOptions;
 
-	for (const FString& SearchValue : Tokens) 
+	for (const FString& SearchValue : Tokens)
 	{
 		FStreamSearch StreamSearch(SearchValue, SearchOptions);
 		while (!StreamSearch.IsComplete())

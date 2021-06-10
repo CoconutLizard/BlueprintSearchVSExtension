@@ -1,8 +1,8 @@
 #pragma once
 
-#include "CoreMinimal.h"
-#include "UObject/ObjectMacros.h"
-#include "Commandlets/Commandlet.h"
+#include <Runtime/Core/Public/CoreMinimal.h>
+#include <Runtime/CoreUObject/Public/UObject/ObjectMacros.h>
+#include <Runtime/Engine/Classes/Commandlets/Commandlet.h>
 #include "FiBCommandlet.generated.h"
 
 UCLASS(MinimalAPI)

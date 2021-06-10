@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "Modules/ModuleManager.h"
+#include <Runtime/Core/Public/CoreMinimal.h>
+#include <Runtime/Core/Public/Modules/ModuleManager.h>
 
 class FFindInBlueprintExternalModule : public IModuleInterface
 {
