@@ -1,3 +1,5 @@
+// Copyright (C) Coconut Lizard Limited. All rights reserved.
+
 #include "FindInBlueprintExternal/Classes/FiBCommandlet.h"
 #include <Developer/AssetTools/Public/AssetToolsModule.h>
 #include <Editor/Kismet/Public/FindInBlueprintManager.h>

@@ -1,3 +1,5 @@
+// Copyright (C) Coconut Lizard Limited. All rights reserved.
+
 #pragma once
 
 #include <Runtime/Core/Public/CoreMinimal.h>

@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright (C) Coconut Lizard Limited. All rights reserved.
 
 #include "FindInBlueprintExternal/Public/FindInBlueprintExternal.h"
 
