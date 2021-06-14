@@ -4,8 +4,6 @@
 #include <Developer/AssetTools/Public/AssetToolsModule.h>
 #include <Editor/Kismet/Public/FindInBlueprintManager.h>
 #include <Runtime/AssetRegistry/Public/AssetRegistry/AssetRegistryModule.h>
-//#include "FindInBlueprintExternal/Classes/FiBResultsToJsonWriter.h"
-#include "FiBResultsToJsonWriter.h"
 
 int32 UFiBCommandlet::Main(const FString& Params)
 {

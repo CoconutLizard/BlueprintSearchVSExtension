@@ -1,5 +1,7 @@
 // Copyright (C) Coconut Lizard Limited. All rights reserved.
 
+using UnrealBuildTool;
+
 public class FindInBlueprintExternal : ModuleRules
 {
 	public FindInBlueprintExternal(ReadOnlyTargetRules Target) : base(Target)
