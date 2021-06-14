@@ -1,13 +1,11 @@
 // Copyright (C) Coconut Lizard Limited. All rights reserved.
 
-using UnrealBuildTool;
-
 public class FindInBlueprintExternal : ModuleRules
 {
 	public FindInBlueprintExternal(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PrivateIncludePaths.Add("FindInBlueprintExternal/Classes");			
-		
+		PrivateIncludePaths.Add("FindInBlueprintExternal/Classes");
+
 
 		PublicDependencyModuleNames.AddRange(
 			new string[]
@@ -15,22 +13,23 @@ public class FindInBlueprintExternal : ModuleRules
 				"Core",
 			}
 			);
-			
-		
+
+
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-                "ApplicationCore",
-                "Engine",
-                "Core",
-                "CoreUObject",
-                "GameProjectGeneration",
+				"ApplicationCore",
+				"Engine",
+				"Core",
+				"CoreUObject",
+				"GameProjectGeneration",
 				"Kismet",
+				"Json",
 				"Slate",
-                "SlateCore",
-                "UnrealEd"
-          	}
+				"SlateCore",
+				"UnrealEd"
+			}
 			);
-		
+
 	}
 }
