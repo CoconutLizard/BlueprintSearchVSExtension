@@ -21,7 +21,8 @@ FiBResultsToJsonWriter::~FiBResultsToJsonWriter()
 void FiBResultsToJsonWriter::WriteDataToJson(const TArray<FSearchResult>& SearchResults, bool IsRoot)
 {
 
-	if (SearchResults.Num() <= 0) {
+	if (SearchResults.Num() <= 0)
+	{
 		return;
 	}
 
