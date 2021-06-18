@@ -1,10 +1,11 @@
 // Copyright (C) Coconut Lizard Limited. All rights reserved.
 
 #include "FindInBlueprintExternal/Classes/FiBCommandlet.h"
+#include "FindInBlueprintExternal/Classes/FiBResultsToJsonWriter.h"
 #include <Developer/AssetTools/Public/AssetToolsModule.h>
 #include <Editor/Kismet/Public/FindInBlueprintManager.h>
 #include <Runtime/AssetRegistry/Public/AssetRegistry/AssetRegistryModule.h>
-#include "FindInBlueprintExternal/Classes/FiBResultsToJsonWriter.h"
+#include <Runtime/Core/Public/Logging/LogMacros.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogFiBCommandlet, Log, All);
 
