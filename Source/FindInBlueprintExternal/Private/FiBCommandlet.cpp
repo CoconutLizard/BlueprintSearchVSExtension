@@ -40,7 +40,7 @@ int32 UFiBCommandlet::Main(const FString& Params)
 		return 1;
 	}
 
-	FiBResultsToJsonWriter Writer(*FileArchive.Get());
+	FiBResultsToJsonWriter Writer(*FileArchive);
 	Writer.WriteDataToJson(OutItemsFound);
 
 	return 0;
