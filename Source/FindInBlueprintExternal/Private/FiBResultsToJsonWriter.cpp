@@ -19,27 +19,25 @@ FiBResultsToJsonWriter::~FiBResultsToJsonWriter()
 
 void FiBResultsToJsonWriter::WriteDataToJson(const TArray<FSearchResult>& SearchResults, bool IsRoot)
 {
-	if (SearchResults.Num() <= 0)
+	if (SearchResults.Num() > 0)
 	{
-		return;
-	}
+		if (IsRoot)
+		{
+			JsonWriter->WriteArrayStart();
+		}
+		else
+		{
+			JsonWriter->WriteArrayStart("Children");
+		}
 
-	if (IsRoot)
-	{
-		JsonWriter->WriteArrayStart();
-	}
-	else
-	{
-		JsonWriter->WriteArrayStart("Children");
-	}
+		for (const FSearchResult& Item : SearchResults)
+		{
+			JsonWriter->WriteObjectStart();
+			JsonWriter->WriteValue(TEXT("Value"), Item->GetDisplayString().ToString());
+			WriteDataToJson(Item->Children, false);
+			JsonWriter->WriteObjectEnd();
+		}
 
-	for (const FSearchResult& Item : SearchResults)
-	{
-		JsonWriter->WriteObjectStart();
-		JsonWriter->WriteValue(TEXT("Value"), Item->GetDisplayString().ToString());
-		WriteDataToJson(Item->Children, false);
-		JsonWriter->WriteObjectEnd();
+		JsonWriter->WriteArrayEnd();
 	}
-
-	JsonWriter->WriteArrayEnd();
 }
