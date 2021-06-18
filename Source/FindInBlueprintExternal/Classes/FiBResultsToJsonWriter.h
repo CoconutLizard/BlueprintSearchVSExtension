@@ -15,7 +15,7 @@ public:
 	FiBResultsToJsonWriter(FArchive& Archive);
 	~FiBResultsToJsonWriter();
 
-	void WriteDataToJson(const TArray<FSearchResult>& Data, bool IsRoot = true);
+	void WriteDataToJson(const TArray<FSearchResult>& Data, bool bIsRoot = true);
 
 private:
 

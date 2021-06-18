@@ -17,12 +17,12 @@ FiBResultsToJsonWriter::~FiBResultsToJsonWriter()
 	JsonWriter->Close();
 }
 
-void FiBResultsToJsonWriter::WriteDataToJson(const TArray<FSearchResult>& SearchResults, bool IsRoot)
+void FiBResultsToJsonWriter::WriteDataToJson(const TArray<FSearchResult>& SearchResults, bool bIsRoot)
 {
 
 	if (SearchResults.Num() > 0)
 	{
-		if (IsRoot)
+		if (bIsRoot)
 		{
 			JsonWriter->WriteArrayStart();
 		}
