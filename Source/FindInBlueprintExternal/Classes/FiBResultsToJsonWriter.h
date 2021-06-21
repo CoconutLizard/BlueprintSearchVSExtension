@@ -2,8 +2,8 @@
 
 #pragma once
 
+#include <Runtime/Core/Public/CoreMinimal.h>
 #include <Editor/Kismet/Public/FindInBlueprintManager.h>
-#include <Runtime/Core/Public/Templates/SharedPointer.h>
 #include <Runtime/Json/Public/Policies/PrettyJsonPrintPolicy.h>
 #include <Runtime/Json/Public/Serialization/JsonWriter.h>
 
