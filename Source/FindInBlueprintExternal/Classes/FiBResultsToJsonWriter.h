@@ -14,11 +14,10 @@ class FiBResultsToJsonWriter
 public:
 	FiBResultsToJsonWriter(FArchive& Archive);
 	~FiBResultsToJsonWriter();
-
-	void WriteDataToJson(const TArray<FSearchResult>& Data, bool bIsRoot = true);
+	void WriteDataToJson(const TArray<FSearchResult>& SearchResults);
+	void WriteSearchResultToJson(const FSearchResult& SearchResult);
 
 private:
-
-	TSharedRef<TJsonWriter<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>> JsonWriter;
+	TSharedRef<TJsonWriter<ANSICHAR, TPrettyJsonPrintPolicy<ANSICHAR >>> JsonWriter;
 };
 

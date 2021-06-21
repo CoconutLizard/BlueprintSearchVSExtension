@@ -7,9 +7,8 @@
 #include <Runtime/Core/Public/Serialization/Archive.h>
 
 FiBResultsToJsonWriter::FiBResultsToJsonWriter(FArchive& Archive)
-	: JsonWriter(TJsonWriterFactory<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>::Create(&Archive))
+	: JsonWriter(TJsonWriterFactory<ANSICHAR, TPrettyJsonPrintPolicy<ANSICHAR>>::Create(&Archive))
 {
-
 }
 
 FiBResultsToJsonWriter::~FiBResultsToJsonWriter()
@@ -17,28 +16,29 @@ FiBResultsToJsonWriter::~FiBResultsToJsonWriter()
 	JsonWriter->Close();
 }
 
-void FiBResultsToJsonWriter::WriteDataToJson(const TArray<FSearchResult>& SearchResults, bool bIsRoot)
+void FiBResultsToJsonWriter::WriteSearchResultToJson(const FSearchResult& SearchResult)
 {
+	JsonWriter->WriteObjectStart();
+	JsonWriter->WriteValue(TEXT("Value"), SearchResult->GetDisplayString().ToString());
+	JsonWriter->WriteArrayStart("Children");
+	for (const FSearchResult& Child : SearchResult->Children)
+	{
+		WriteSearchResultToJson(Child);
+	}
+	JsonWriter->WriteArrayEnd();
 
+	JsonWriter->WriteObjectEnd();
+}
+
+void FiBResultsToJsonWriter::WriteDataToJson(const TArray<FSearchResult>& SearchResults)
+{
 	if (SearchResults.Num() > 0)
 	{
-		if (bIsRoot)
-		{
-			JsonWriter->WriteArrayStart();
-		}
-		else
-		{
-			JsonWriter->WriteArrayStart("Children");
-		}
-
+		JsonWriter->WriteArrayStart();
 		for (const FSearchResult& Item : SearchResults)
 		{
-			JsonWriter->WriteObjectStart();
-			JsonWriter->WriteValue(TEXT("Value"), Item->GetDisplayString().ToString());
-			WriteDataToJson(Item->Children, false);
-			JsonWriter->WriteObjectEnd();
+			WriteSearchResultToJson(Item);
 		}
-
 		JsonWriter->WriteArrayEnd();
 	}
 }
