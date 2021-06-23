@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace BlueprintSearch.Commands.CommandHandlers
 {
