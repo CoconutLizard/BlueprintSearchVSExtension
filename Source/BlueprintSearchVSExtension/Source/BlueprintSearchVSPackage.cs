@@ -1,3 +1,7 @@
+// Copyright (C) Coconut Lizard Limited. All rights reserved.
+
+// ---------------------------------------------------------
+
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
@@ -25,9 +29,6 @@ namespace BlueprintSearch
 	/// </remarks>
 	[PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
 	[Guid(BlueprintSearchVSPackage.PackageGuidString)]
-	// Copyright (C) Coconut Lizard Limited. All rights reserved.
-
-	// ---------------------------------------------------------
 
 	[ProvideMenuResource("Menus.ctmenu", 1)]
 	[ProvideToolWindow(typeof(BlueprintSearchVSWindow))]

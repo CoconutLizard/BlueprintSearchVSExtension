@@ -1,3 +1,7 @@
+// Copyright (C) Coconut Lizard Limited. All rights reserved.
+
+// ---------------------------------------------------------
+
 using BlueprintSearch.Commands.CommandHandlers;
 using Microsoft.VisualStudio.Shell;
 using System.Diagnostics.CodeAnalysis;
