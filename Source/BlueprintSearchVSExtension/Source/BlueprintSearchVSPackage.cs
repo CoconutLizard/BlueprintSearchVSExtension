@@ -2,11 +2,17 @@
 
 // ---------------------------------------------------------
 
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Task = System.Threading.Tasks.Task;
+
+using EnvDTE;
+using EnvDTE80;
+
 
 namespace BlueprintSearch
 {
@@ -15,12 +21,15 @@ namespace BlueprintSearch
 
 	[ProvideMenuResource("Menus.ctmenu", 1)]
 	[ProvideToolWindow(typeof(BlueprintSearchVSWindow))]
-	public sealed class BlueprintSearchVSPackage : AsyncPackage
+	public sealed class BlueprintSearchVSPackage : AsyncPackage, IVsSolutionEvents
 	{
 		/// <summary>
 		/// BlueprintSearchPackage GUID string.
 		/// </summary>
 		public const string PackageGuidString = "d736bb7a-6a91-476d-84dc-a27acedc454b";
+
+		private IVsSolution SolutionLoaderManager;
+		private uint SolutionEvents = uint.MaxValue;
 
 		#region Package Members
 
@@ -35,8 +44,73 @@ namespace BlueprintSearch
 		{
 			// When initialized asynchronously, the current thread may be a background thread at this point.
 			// Do any initialization that requires the UI thread after switching to the UI thread.
+			await base.InitializeAsync(cancellationToken, progress);
 			await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 			await BlueprintSearchVSWindowCommand.InitializeAsync(this);
+			await InitDTEAsync();
+			InitSolutionLoaderManager();
+		}
+
+		private async Task InitDTEAsync()
+		{
+			Commands.CommandHelpers.PathFinderHelper.DTEService = await GetServiceAsync(typeof(DTE)) as DTE2;
+		}
+
+		private void InitSolutionLoaderManager()
+		{
+			SolutionLoaderManager = GetService(typeof(SVsSolution)) as IVsSolution;
+			SolutionLoaderManager.AdviseSolutionEvents(this, out SolutionEvents);
+		}
+
+		public int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
+		{
+			return VSConstants.S_OK;
+		}
+
+		public int OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel)
+		{
+			return VSConstants.S_OK;
+		}
+
+		public int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
+		{
+			return VSConstants.S_OK;
+		}
+
+		public int OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
+		{
+			return VSConstants.S_OK;
+		}
+
+		public int OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
+		{
+			return VSConstants.S_OK;
+		}
+
+		public int OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy)
+		{
+			return VSConstants.S_OK;
+		}
+
+		public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
+		{
+			Commands.CommandHelpers.PathFinderHelper.FindPaths();
+			return VSConstants.S_OK;
+		}
+
+		public int OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
+		{
+			return VSConstants.S_OK;
+		}
+
+		public int OnBeforeCloseSolution(object pUnkReserved)
+		{
+			return VSConstants.S_OK;
+		}
+
+		public int OnAfterCloseSolution(object pUnkReserved)
+		{
+			return VSConstants.S_OK;
 		}
 
 		#endregion

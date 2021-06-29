@@ -45,6 +45,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Commands\CommandHelpers\PathFinderHelper.cs" />
     <Compile Include="Source\UI\ToolWindows\BlueprintSearchWindow\BlueprintSearchVSWindow.cs" />
     <Compile Include="Source\Commands\BlueprintSearchVSWindowCommand.cs" />
     <Compile Include="Source\UI\ToolWindows\BlueprintSearchWindow\BlueprintSearchVSWindowControl.xaml.cs">

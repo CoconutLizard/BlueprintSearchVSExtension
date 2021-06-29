@@ -1,1 +1,1 @@
-"D:/UnrealEngine4.26/Engine/Binaries/Win64/UE4Editor-Cmd.exe" D:/UnrealEngine4.26/Projects/VehicleGame/VehicleGame.uproject -run=FiB $1
+$1 $2 -run=FiB $3
