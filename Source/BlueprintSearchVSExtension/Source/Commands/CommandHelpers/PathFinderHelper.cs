@@ -15,9 +15,9 @@ namespace BlueprintSearch.Commands.CommandHelpers
 	{
 		public static DTE2 DTEService;
 
-		public static string UProjectFilePath { get; set; }
+		public static string UProjectFilePath { get; private set; }
 
-		public static string UECommandLineFilePath { get; set; }
+		public static string UECommandLineFilePath { get; private set; }
 
 		public static void FindPaths()
 		{
@@ -30,55 +30,44 @@ namespace BlueprintSearch.Commands.CommandHelpers
 			}
 
 			for (int i = 0; i < ProjectsList.Count; ++i)
+			foreach (Project Project in ProjectsList)
 			{
-
-				if (ProjectsList[i].Name.Equals("UE4"))
+				if (Project.Name.Equals("UE4"))
 				{
 					// This solution contains a ue4 project, find the path!
-					string EngineIncludePath = GetUnrealCommandLineExecutablePathFromProject(ProjectsList[i]);
-					UECommandLineFilePath = EngineIncludePath;
-					if (EngineIncludePath.Equals(string.Empty))
+					string EngineIncludePath = GetUnrealCommandLineExecutablePathFromProject(Project);
+					if (string.IsNullOrEmpty(EngineIncludePath))
 					{
 						MessageBox.Show("BlueprintSearchVS could not find an unreal project in this solution.", "BlueprintSearchVS Warning");
 					}
-
-					//We know that we are in a ue4 project, so we analyze all the ue4 metadata we need.
-					const string UProjectExtension = ".uproject";
-					UProjectFilePath = Path.GetFullPath(Path.ChangeExtension(DTEService.Solution.FullName, UProjectExtension)).Replace('\\', '/');
+					else
+					{
+						//We know that we are in a ue4 project, so we analyze all the ue4 metadata we need.
+						UECommandLineFilePath = EngineIncludePath;
+						const string UProjectExtension = ".uproject";
+						UProjectFilePath = Path.GetFullPath(Path.ChangeExtension(DTEService.Solution.FullName, UProjectExtension)).Replace('\\', '/');
+					}
 
 					return;
 				}
 			}
-
-			UECommandLineFilePath = string.Empty;
-			MessageBox.Show("BlueprintSearchVS could not find an unreal project in this solution.", "BlueprintSearchVS Warning");
 		}
 
 		private static string GetUnrealCommandLineExecutablePathFromProject(EnvDTE.Project Prj)
 		{
-			string SourceDirectoryPath;
-			if (Prj.FullName.Contains("Engine\\Intermediate\\ProjectFiles\\")) // this is a valid check to know that the unreal source directory is located at: ../../Source/
+			string SourceDirectoryPath = Path.GetDirectoryName(Prj.FullName);
+			string UE4CmdRelativePath = "Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe";
+
+			while (Path.GetFullPath(SourceDirectoryPath) != Path.GetPathRoot(SourceDirectoryPath))
 			{
-				SourceDirectoryPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Prj.FullName), "..", "..")) + "\\Binaries\\Win64\\UE4Editor-Cmd.exe";
-				var DirInfo2 = new DirectoryInfo(Path.GetDirectoryName(SourceDirectoryPath));
-				if (DirInfo2.Exists)
-				{ 
-					return SourceDirectoryPath.Replace('\\', '/');
+				string SearchPath = Path.Combine(Path.GetFullPath(SourceDirectoryPath), UE4CmdRelativePath);
+				var DirInfo = new DirectoryInfo(Path.GetDirectoryName(SearchPath));
+				if (DirInfo.Exists)
+				{
+					return SearchPath.Replace('\\', '/');
 				}
-			}
 
-			SourceDirectoryPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Prj.FullName), "..", "..", "..")) + "\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe";
-			var DirInfo = new DirectoryInfo(Path.GetDirectoryName(SourceDirectoryPath));
-			if (DirInfo.Exists)
-			{
-				return SourceDirectoryPath.Replace('\\', '/');
-			}
-
-			SourceDirectoryPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Prj.FullName), "..", "..", "..", "..")) + "\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe";
-			DirInfo = new DirectoryInfo(Path.GetDirectoryName(SourceDirectoryPath));
-			if (DirInfo.Exists)
-			{
-				return SourceDirectoryPath.Replace('\\', '/');
+				SourceDirectoryPath = Path.Combine(SourceDirectoryPath, "..");
 			}
 
 			return string.Empty;

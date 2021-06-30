@@ -26,9 +26,6 @@ namespace BlueprintSearch
 		/// </summary>
 		public const string PackageGuidString = "d736bb7a-6a91-476d-84dc-a27acedc454b";
 
-		private IVsSolution SolutionLoaderManager;
-		private uint SolutionEvents = uint.MaxValue;
-
 		#region Package Members
 
 		/// <summary>
@@ -46,7 +43,7 @@ namespace BlueprintSearch
 			await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 			await BlueprintSearchVSWindowCommand.InitializeAsync(this);
 			await InitDTEAsync();
-			InitSolutionLoaderManager();
+			await InitSolutionLoaderManagerAsync();
 		}
 
 		private async Task InitDTEAsync()
@@ -54,10 +51,11 @@ namespace BlueprintSearch
 			Commands.CommandHelpers.PathFinderHelper.DTEService = await GetServiceAsync(typeof(DTE)) as DTE2;
 		}
 
-		private void InitSolutionLoaderManager()
+		private async Task InitSolutionLoaderManagerAsync()
 		{
-			SolutionLoaderManager = GetService(typeof(SVsSolution)) as IVsSolution;
-			SolutionLoaderManager.AdviseSolutionEvents(this, out SolutionEvents);
+			//We don't need the solution event, we just need to initialize the Solution service with this Event handlers
+			uint tmp = uint.MaxValue;
+			((IVsSolution) await GetServiceAsync(typeof(SVsSolution))).AdviseSolutionEvents(this, out tmp);
 		}
 
 		public int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)

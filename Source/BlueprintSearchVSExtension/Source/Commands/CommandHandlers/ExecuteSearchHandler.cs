@@ -11,13 +11,9 @@ namespace BlueprintSearch.Commands.CommandHandlers
 {
 	public class ExecuteSearchHandler
 	{
-
 		public void MakeSearch(string InSearchValue)
 		{
-
-			//PathFinderHelper.FindPaths();
 			string Arguments = PathFinderHelper.UECommandLineFilePath + " " + PathFinderHelper.UProjectFilePath + " " + InSearchValue;
-
 			System.Diagnostics.Process Proc = new System.Diagnostics.Process();
 			Proc.StartInfo.FileName = "RunSearchCommandlet.sh";
 			Proc.StartInfo.WorkingDirectory = Path.GetFullPath("../..") + "\\Source\\Scripts\\";
@@ -25,7 +21,6 @@ namespace BlueprintSearch.Commands.CommandHandlers
 			Proc.StartInfo.UseShellExecute = true;
 			Proc.Start();
 			Proc.WaitForExit();
-		
 			string SearchResultsPath = Path.GetFullPath("../..") + "\\Source\\Scripts\\SearchResults.json";
 			using (StreamReader Reader = new StreamReader(SearchResultsPath))
 			{
@@ -33,5 +28,4 @@ namespace BlueprintSearch.Commands.CommandHandlers
 			}
 		}
 	}
-
 }
