@@ -29,13 +29,12 @@ namespace BlueprintSearch.Commands.CommandHelpers
 				ProjectsList.AddRange(ProjectsList[i].ProjectItems.Cast<ProjectItem>().Select(x => x.SubProject).OfType<Project>());
 			}
 
-			for (int i = 0; i < ProjectsList.Count; ++i)
-			foreach (Project Project in ProjectsList)
+			foreach (Project project in ProjectsList)
 			{
-				if (Project.Name.Equals("UE4"))
+				if (project.Name.Equals("UE4"))
 				{
 					// This solution contains a ue4 project, find the path!
-					string EngineIncludePath = GetUnrealCommandLineExecutablePathFromProject(Project);
+					string EngineIncludePath = GetUnrealCommandLineExecutablePathFromProject(project);
 					if (string.IsNullOrEmpty(EngineIncludePath))
 					{
 						MessageBox.Show("BlueprintSearchVS could not find an unreal project in this solution.", "BlueprintSearchVS Warning");
