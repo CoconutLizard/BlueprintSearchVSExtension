@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace BlueprintSearch
 {
@@ -23,6 +24,21 @@ namespace BlueprintSearch
 			this.InitializeComponent();
 		}
 
+		public void SearchBarGotFocus(object InSenderObject, RoutedEventArgs InEventArgs)
+		{
+			TextBox SearchBox = (TextBox)InSenderObject;
+			SearchBox.Text = string.Empty;
+			SearchBox.GotFocus -= SearchBarGotFocus;
+		}
+
+		private void OnKeyDownHandler(object InSenderObject, KeyEventArgs InEventArgs)
+		{
+			if(InEventArgs.Key == Key.Enter)
+			{
+				SearchButtonClick(InSenderObject, null);
+			}
+		}
+
 		/// <summary>
 		/// Handles click on the button by displaying a message box.
 		/// </summary>
@@ -30,13 +46,11 @@ namespace BlueprintSearch
 		/// <param name="e">The event args.</param>
 		[SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
 		[SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
-		private void button1_Click(object sender, RoutedEventArgs e)
+		private void SearchButtonClick(object InSenderObject, RoutedEventArgs InEventArgs)
 		{
-			ThreadHelper.ThrowIfNotOnUIThread();
-			ExecuteSearchHandler executeSearch = new ExecuteSearchHandler();
-			executeSearch.MakeSearch(SearchValue.Text);
-
+			ThreadHelper.ThrowIfNotOnUIThread("BlueprintSearchWindowControl.SearchButtonClick");
+			ExecuteSearchHandler ExecuteSearch = new ExecuteSearchHandler();
+			ResultsView.ItemsSource = ExecuteSearch.MakeSearch(SearchValue.Text);
 		}
-
 	}
 }
