@@ -24,18 +24,18 @@ namespace BlueprintSearch
 			this.InitializeComponent();
 		}
 
-		public void SearchBarGotFocus(object sender, RoutedEventArgs e)
+		public void SearchBarGotFocus(object InSenderObject, RoutedEventArgs InEventArgs)
 		{
-			TextBox SearchBox = (TextBox)sender;
+			TextBox SearchBox = (TextBox)InSenderObject;
 			SearchBox.Text = string.Empty;
 			SearchBox.GotFocus -= SearchBarGotFocus;
 		}
 
-		private void OnKeyDownHandler(object sender, KeyEventArgs e)
+		private void OnKeyDownHandler(object InSenderObject, KeyEventArgs InEventArgs)
 		{
-			if(e.Key == Key.Enter)
+			if(InEventArgs.Key == Key.Enter)
 			{
-				SearchButtonClick(sender, null);
+				SearchButtonClick(InSenderObject, null);
 			}
 		}
 
@@ -46,11 +46,11 @@ namespace BlueprintSearch
 		/// <param name="e">The event args.</param>
 		[SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
 		[SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
-		private void SearchButtonClick(object sender, RoutedEventArgs e)
+		private void SearchButtonClick(object InSenderObject, RoutedEventArgs InEventArgs)
 		{
-			ThreadHelper.ThrowIfNotOnUIThread();
-			ExecuteSearchHandler executeSearch = new ExecuteSearchHandler();
-			ResultsView.ItemsSource = executeSearch.MakeSearch(SearchValue.Text);
+			ThreadHelper.ThrowIfNotOnUIThread("BlueprintSearchWindowControl.SearchButtonClick");
+			ExecuteSearchHandler ExecuteSearch = new ExecuteSearchHandler();
+			ResultsView.ItemsSource = ExecuteSearch.MakeSearch(SearchValue.Text);
 		}
 	}
 }

@@ -15,9 +15,9 @@ namespace BlueprintSearch.Commands.CommandHelpers
 			Children = new List<BlueprintJsonObject>();
 		}
 
-		public BlueprintJsonObject(string value)
+		public BlueprintJsonObject(string InValue)
 		{
-			Value = value;
+			Value = InValue;
 			Children = null;
 		}
 
