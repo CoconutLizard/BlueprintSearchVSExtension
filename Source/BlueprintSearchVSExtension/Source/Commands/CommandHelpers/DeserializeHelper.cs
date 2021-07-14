@@ -26,7 +26,7 @@ namespace BlueprintSearch.Commands.CommandHelpers
 		public List<BlueprintJsonObject> Children { get; set; }
 	}
 
-	public class UthManifestJsonObject
+	public class UhtManifestJsonObject
 	{
 		public bool IsGameTarget { get; set; }
 		public string RootLocalPath { get; set; }

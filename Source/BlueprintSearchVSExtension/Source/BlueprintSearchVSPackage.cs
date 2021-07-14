@@ -45,7 +45,6 @@ namespace BlueprintSearch
 			await InitDTEAsync();
 			await InitSolutionLoaderManagerAsync();
 			Commands.CommandHelpers.PathFinderHelper.FindPaths();
-
 		}
 
 		private async Task InitDTEAsync()
