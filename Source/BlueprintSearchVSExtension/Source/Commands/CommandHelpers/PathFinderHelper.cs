@@ -50,21 +50,23 @@ namespace BlueprintSearch.Commands.CommandHelpers
 				}
 
 				string UERootPath = GetUnrealCommandLineExecutablePath();
-				UECommandLineFilePath = Path.Combine(UERootPath, "Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe").Replace('\\', '/');
+				UECommandLineFilePath = Path.Combine(UERootPath, "Engine\\Binaries\\Win64\\UE4Editor-Cmd.ex").Replace('\\', '/');
 				if (!File.Exists(UECommandLineFilePath))
 				{
-					MessageBox.Show("BlueprintSearchVS could not find Unreal's command line executable.", "BlueprintSearchVS Warning");
+					MessageBox.Show("BlueprintSearchVS could not find Unreal's command line executable.\nCheck that you have an up to date Development Editor build.", "BlueprintSearchVS Warning");
 				}
 			}
 		}
 
 		private static string GetUnrealCommandLineExecutablePath()
 		{
-			string UhtManifestPath = Path.Combine(Path.GetFullPath(Path.Combine(DTEService.Solution.FullName, "..")), "Intermediate\\Build\\Win64\\VehicleGameEditor\\Development\\VehicleGameEditor.uhtmanifest");
-			using (StreamReader Reader = new StreamReader(UhtManifestPath))
+			string UhtManifestPath = "Intermediate\\Build\\Win64\\$ProjectName$Editor\\Development\\$ProjectName$Editor.uhtmanifest";
+			string ProjectName = Path.GetFileNameWithoutExtension(DTEService.Solution.FileName);
+			string UhtManifestRelativePath = Path.Combine(Path.GetFullPath(Path.Combine(DTEService.Solution.FullName, "..")), UhtManifestPath.Replace("$ProjectName$", ProjectName));
+			using (StreamReader Reader = new StreamReader(UhtManifestRelativePath))
 			{
-				var UthManifestObject = JsonConvert.DeserializeObject<UthManifestJsonObject>(Reader.ReadToEnd());
-				return UthManifestObject.RootLocalPath;
+				var UhtManifestObject = JsonConvert.DeserializeObject<UhtManifestJsonObject>(Reader.ReadToEnd());
+				return UhtManifestObject.RootLocalPath;
 			}
 		}
 
