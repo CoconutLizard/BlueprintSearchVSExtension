@@ -1,3 +1,5 @@
+// Copyright (C) Coconut Lizard Limited. All rights reserved.
+
 #include "FindInBlueprintExternal/Classes/FImaginaryFiBDataAccessor.h"
 #include <Editor/Kismet/Public/FindInBlueprintManager.h>
 #include <Editor/Kismet/Public/FindInBlueprints.h>

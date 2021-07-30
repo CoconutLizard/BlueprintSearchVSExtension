@@ -1,4 +1,5 @@
 // Copyright (C) Coconut Lizard Limited. All rights reserved.
+
 #include "FindInBlueprintExternal/Classes/FiBResultsToJsonWriter.h"
 #include "FindInBlueprintExternal/Classes/FImaginaryFiBDataAccessor.h"
 #include <Runtime/Core/Public/HAL/FileManager.h>
