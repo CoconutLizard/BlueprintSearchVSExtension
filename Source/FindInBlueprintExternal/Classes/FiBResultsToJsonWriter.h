@@ -14,8 +14,8 @@ class FiBResultsToJsonWriter
 public:
 	FiBResultsToJsonWriter(FArchive& Archive);
 	~FiBResultsToJsonWriter();
-	void WriteDataToJson(const TArray<FSearchResult>& SearchResults);
-	void WriteSearchResultToJson(const FSearchResult& SearchResult);
+	void WriteDataToJson(const TArray<FSearchResult>& SearchResults, const TArray<FImaginaryFiBDataSharedPtr>& SearchResultsImmaginaryBlueprints);
+	void WriteSearchResultToJson(const FSearchResult& SearchResult, const FImaginaryFiBDataSharedPtr& ImmaginaryBlueprint);
 
 private:
 	TSharedRef<TJsonWriter<ANSICHAR, TPrettyJsonPrintPolicy<ANSICHAR >>> JsonWriter;

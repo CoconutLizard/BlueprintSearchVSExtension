@@ -50,7 +50,7 @@ namespace BlueprintSearch.Commands.CommandHelpers
 				}
 
 				string UERootPath = GetUnrealCommandLineExecutablePath();
-				UECommandLineFilePath = Path.Combine(UERootPath, "Engine\\Binaries\\Win64\\UE4Editor-Cmd.ex").Replace('\\', '/');
+				UECommandLineFilePath = Path.Combine(UERootPath, "Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe").Replace('\\', '/');
 				if (!File.Exists(UECommandLineFilePath))
 				{
 					MessageBox.Show("BlueprintSearchVS could not find Unreal's command line executable.\nCheck that you have an up to date Development Editor build.", "BlueprintSearchVS Warning");
