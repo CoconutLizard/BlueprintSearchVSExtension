@@ -3,22 +3,18 @@
 #include "FindInBlueprintExternal/Classes/FImaginaryFiBDataAccessor.h"
 #include <Editor/Kismet/Public/FindInBlueprintManager.h>
 #include <Editor/Kismet/Public/FindInBlueprints.h>
-#include <Editor/Kismet/Public/ImaginaryBlueprintData.h>
 
 #define LOCTEXT_NAMESPACE "FindInBlueprintsCommandlet"
 
-FText FindInBlueprintsHelpers::AsFText(int32 InValue, const TMap<int32, FText>& InLookupTable)
+class FSearchableValueInfoHelper final : public FSearchableValueInfo
 {
-	if (const FText* LookupText = InLookupTable.Find(InValue))
-	{
-		return *LookupText;
-	}
-	// Let's never get here.
-	return LOCTEXT("FiBSerializationError", "There was an error in serialization!");
-}
+public:
+	FSearchableValueInfoHelper(const FSearchableValueInfo& InValueInfo): FSearchableValueInfo(InValueInfo){}
+	FText GetDisplayText(const TMap<int32, FText>& InLookupTable) const;
+};
 
 /** Returns the display text to use for this item */
-FText FSearchableValueInfo::GetDisplayText(const TMap<int32, FText>& InLookupTable) const
+FText FSearchableValueInfoHelper::GetDisplayText(const TMap<int32, FText>& InLookupTable) const
 {
 	FText Result;
 	if (!DisplayText.IsEmpty() || LookupTableKey == -1)
@@ -27,12 +23,13 @@ FText FSearchableValueInfo::GetDisplayText(const TMap<int32, FText>& InLookupTab
 	}
 	else
 	{
-		Result = FindInBlueprintsHelpers::AsFText(LookupTableKey, InLookupTable);
+		Result = *InLookupTable.Find(LookupTableKey);
 	}
+
 	return Result;
 }
 
-FString FImaginaryFiBDataAccessor::GetInfo(const FText& Category, const FText& DisplayText)
+FString FImaginaryFiBDataAccessor::GetInfo(const FText& Category, const FText& DisplayText) const
 {
 	FString OutInfo;
 	if (!Category.IsEmpty())
@@ -81,7 +78,8 @@ FImaginaryFiBDataSharedPtr FImaginaryFiBDataAccessor::GetParsedChild(const FText
 	{
 		for (const TPair<FindInBlueprintsHelpers::FSimpleFTextKeyStorage, FSearchableValueInfo>& Child : ParsedTagsAndValues)
 		{
-			const FString CommentMetadata = FString::Printf(TEXT("%s: %s"), *Child.Key.Text.ToString(), *Child.Value.GetDisplayText(*LookupTablePtr).ToString());
+			const FSearchableValueInfoHelper ValueHelper(Child.Value);
+			const FString CommentMetadata = FString::Printf(TEXT("%s: %s"), *Child.Key.Text.ToString(), *ValueHelper.GetDisplayText(*LookupTablePtr).ToString());
 			if (CommentMetadata.Equals(DisplayText.ToString()))
 			{
 				OutChild = AsShared();
@@ -98,7 +96,8 @@ bool FImaginaryFiBDataAccessor::LookUpValue(const FText& Category, const FText& 
 	bool IsTagOrValueFound = false;
 	if (const FSearchableValueInfo* SearchableValue = ParsedTagsAndValues.Find(Category))
 	{
-		if (SearchableValue->GetDisplayText(*LookupTablePtr).CompareTo(DisplayText) == 0)
+		const FSearchableValueInfoHelper ValueHelper(*SearchableValue);
+		if (ValueHelper.GetDisplayText(*LookupTablePtr).CompareTo(DisplayText) == 0)
 		{
 			IsTagOrValueFound = true;
 		}
@@ -117,12 +116,13 @@ bool FImaginaryFiBDataAccessor::LookUpValue(const FText& Category, const FText& 
 	return IsTagOrValueFound;
 }
 
-FString FImaginaryFiBDataAccessor::GetValue(const FText& Key)
+FString FImaginaryFiBDataAccessor::GetValue(const FText& Key) const
 {
 	FString OutValue;
 	if (const FSearchableValueInfo* SearchableValue = ParsedTagsAndValues.Find(Key))
 	{
-		OutValue = SearchableValue->GetDisplayText(*LookupTablePtr).ToString();
+		const FSearchableValueInfoHelper ValueHelper(*SearchableValue);
+		OutValue = ValueHelper.GetDisplayText(*LookupTablePtr).ToString();
 	}
 	return OutValue;
 }

@@ -3,8 +3,9 @@
 #pragma once
 
 #include <Runtime/Core/Public/CoreMinimal.h>
+#include <Editor/Kismet/Public/ImaginaryBlueprintData.h>
 
-class FImaginaryFiBDataAccessor final : protected FImaginaryFiBData
+class FImaginaryFiBDataAccessor final : public FImaginaryFiBData
 {
 public:
 	FImaginaryFiBDataAccessor(FImaginaryFiBDataWeakPtr InOuter, TSharedPtr< FJsonObject > InUnparsedJsonObject = TSharedPtr<FJsonObject>(), TMap<int32, FText>* InLookupTablePtr = nullptr)
@@ -12,9 +13,8 @@ public:
 	{
 	}
 
-	FString GetInfo(const FText& Category, const FText& DisplayText);
+	FString GetInfo(const FText& Category, const FText& DisplayText) const;
 	FImaginaryFiBDataSharedPtr GetParsedChild(const FText& DisplayText);
 	bool LookUpValue(const FText& Category, const FText& DisplayText);
-	FString GetValue(const FText& text);
+	FString GetValue(const FText& Key) const;
 };
-

@@ -10,15 +10,11 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogFiBCommandlet, Log, All);
 
-
-
 int32 UFiBCommandlet::Main(const FString& Params)
 {
 	GIsRunning = true;
 	const FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
 	AssetRegistryModule.Get().SearchAllAssets(true);
-	TArray<FAssetData> data;
-	AssetRegistryModule.Get().GetAssetsByClass(TEXT("Blueprint"), data);
 
 	TArray<FString> Tokens;
 	TArray<FString> Switches;

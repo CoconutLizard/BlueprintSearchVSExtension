@@ -7,7 +7,6 @@
 #include <Runtime/Core/Public/Misc/Paths.h>
 #include <Runtime/Core/Public/Serialization/Archive.h>
 
-
 FiBResultsToJsonWriter::FiBResultsToJsonWriter(FArchive& Archive)
 	: JsonWriter(TJsonWriterFactory<ANSICHAR, TPrettyJsonPrintPolicy<ANSICHAR>>::Create(&Archive))
 {
@@ -42,9 +41,9 @@ void FiBResultsToJsonWriter::WriteDataToJson(const TArray<FSearchResult>& Search
 	if (SearchResults.Num() > 0)
 	{
 		JsonWriter->WriteArrayStart();
-		for (uint8 i = 0; i < SearchResults.Num(); i++)
+		for (uint8 CurrentRoot = 0; CurrentRoot < SearchResults.Num(); CurrentRoot++)
 		{
-			WriteSearchResultToJson(SearchResults[i], SearchResultsImmaginaryBlueprints[i]);
+			WriteSearchResultToJson(SearchResults[CurrentRoot], SearchResultsImmaginaryBlueprints[CurrentRoot]);
 		}
 		JsonWriter->WriteArrayEnd();
 	}

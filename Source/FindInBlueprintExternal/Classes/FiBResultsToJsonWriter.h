@@ -20,4 +20,3 @@ public:
 private:
 	TSharedRef<TJsonWriter<ANSICHAR, TPrettyJsonPrintPolicy<ANSICHAR >>> JsonWriter;
 };
-
