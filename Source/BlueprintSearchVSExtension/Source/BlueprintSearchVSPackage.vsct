@@ -73,8 +73,8 @@
         </Strings>
       </Button>
       <Button guid="guidBlueprintSearchPackageCmdSet" id="cmdidBlueprintSearchWindowCommand" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
-        <Icon guid="guidImages2" id="bmpPic1" />
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+        <Icon guid="guidImages2" id="bmpPicSearch" />
         <Strings>
           <ButtonText>BlueprintSearchWindow</ButtonText>
         </Strings>
@@ -93,7 +93,13 @@
     </Bitmaps>
   </Commands>
 
-  <Symbols>
+	<!-- BEGIN: KeyBindings -->
+	<KeyBindings>
+		<KeyBinding guid="guidBlueprintSearchPackageCmdSet" id="cmdidBlueprintSearchWindowCommand" editor="guidVSStd97" key1="0x42" mod1="Alt Control"/> <!--CTRL + ALT + K-->
+	</KeyBindings>
+	<!-- END: KeyBindings -->
+
+	<Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidBlueprintSearchPackage" value="{d736bb7a-6a91-476d-84dc-a27acedc454b}" />
 
