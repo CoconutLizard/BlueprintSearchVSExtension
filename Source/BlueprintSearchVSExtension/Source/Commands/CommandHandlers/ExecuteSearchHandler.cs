@@ -15,13 +15,13 @@ namespace BlueprintSearch.Commands.CommandHandlers
 		{
 			string Arguments = PathFinderHelper.UECommandLineFilePath + " " + PathFinderHelper.UProjectFilePath + " " + InSearchValue;
 			System.Diagnostics.Process Proc = new System.Diagnostics.Process();
-			Proc.StartInfo.FileName = "RunSearchCommandlet.sh";
-			Proc.StartInfo.WorkingDirectory = Path.GetFullPath("../..") + "\\Source\\Scripts\\";
+			Proc.StartInfo.FileName = PathFinderHelper.CommmandletFileName;
+			Proc.StartInfo.WorkingDirectory = PathFinderHelper.WorkingDirectoryPath;
 			Proc.StartInfo.Arguments = Arguments;
 			Proc.StartInfo.UseShellExecute = true;
 			Proc.Start();
 			Proc.WaitForExit();
-			string SearchResultsPath = Path.GetFullPath("../..") + "\\Source\\Scripts\\SearchResults.json";
+			string SearchResultsPath = Path.Combine( PathFinderHelper.WorkingDirectoryPath, "SearchResults.json");
 			using (StreamReader Reader = new StreamReader(SearchResultsPath))
 			{
 				var SearchResults = JsonConvert.DeserializeObject<List<BlueprintJsonObject>>(Reader.ReadToEnd());

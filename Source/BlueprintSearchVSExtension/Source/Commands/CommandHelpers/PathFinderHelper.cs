@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 
 namespace BlueprintSearch.Commands.CommandHelpers
@@ -19,6 +20,10 @@ namespace BlueprintSearch.Commands.CommandHelpers
 		public static string UProjectFilePath { get; private set; }
 
 		public static string UECommandLineFilePath { get; private set; }
+
+		public static string WorkingDirectoryPath { get; private set; }
+
+		public const string CommmandletFileName = "RunSearchCommandlet.sh";
 
 		public static void FindPaths()
 		{
@@ -55,6 +60,8 @@ namespace BlueprintSearch.Commands.CommandHelpers
 				{
 					MessageBox.Show("BlueprintSearchVS could not find Unreal's command line executable.\nCheck that you have an up to date Development Editor build.", "BlueprintSearchVS Warning");
 				}
+
+				WorkingDirectoryPath = GetScriptPath();
 			}
 		}
 
@@ -70,6 +77,17 @@ namespace BlueprintSearch.Commands.CommandHelpers
 			}
 		}
 
+		public static string GetScriptPath()
+		{
+			string RootPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			string OutPath = Path.Combine(RootPath, "Source\\Scripts\\");
+			if (!File.Exists(Path.Combine(OutPath, CommmandletFileName)))
+			{
+				OutPath = "";
+				MessageBox.Show("BlueprintSearchVS could not find CommandletScript.", "BlueprintSearchVS Warning");
+			}
+			return OutPath;
+		}
 	}
 
 }

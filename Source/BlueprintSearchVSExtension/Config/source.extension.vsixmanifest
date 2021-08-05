@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="BlueprintSearch.c46293e0-fd4e-4e8b-a903-d90753e23089" Version="1.0" Language="en-US" Publisher="Coconut Lizard" />
+        <Identity Id="BlueprintSearch.c46293e0-fd4e-4e8b-a903-d90753e23089" Version="0.9.1" Language="en-US" Publisher="Coconut Lizard" />
         <DisplayName>BlueprintSearch</DisplayName>
         <Description xml:space="preserve">A Visual Studio extension that allows developers to search and find references to elements contained inside Unreal Engine 4 Blueprints without launching the editor,created by Coconut Lizard.</Description>
     </Metadata>
