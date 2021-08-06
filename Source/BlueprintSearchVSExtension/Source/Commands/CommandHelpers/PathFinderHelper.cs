@@ -23,7 +23,7 @@ namespace BlueprintSearch.Commands.CommandHelpers
 
 		public static string WorkingDirectoryPath { get; private set; }
 
-		public const string CommmandletFileName = "RunSearchCommandlet.sh";
+		public const string CommmandletFileName = "RunSearchCommandlet.bat";
 
 		public static void FindPaths()
 		{

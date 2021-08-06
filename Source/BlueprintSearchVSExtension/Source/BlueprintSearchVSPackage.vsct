@@ -95,7 +95,7 @@
 
 	<!-- BEGIN: KeyBindings -->
 	<KeyBindings>
-		<KeyBinding guid="guidBlueprintSearchPackageCmdSet" id="cmdidBlueprintSearchWindowCommand" editor="guidVSStd97" key1="0x42" mod1="Alt Control"/> <!--CTRL + ALT + K-->
+		<KeyBinding guid="guidBlueprintSearchPackageCmdSet" id="cmdidBlueprintSearchWindowCommand" editor="guidVSStd97" key1="0x47" mod1="Alt Shift Control"/> <!--CTRL + SHIFT + G-->
 	</KeyBindings>
 	<!-- END: KeyBindings -->
 
