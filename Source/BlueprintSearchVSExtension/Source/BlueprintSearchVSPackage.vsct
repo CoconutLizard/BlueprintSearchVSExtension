@@ -76,7 +76,7 @@
         <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
         <Icon guid="guidImages2" id="bmpPicSearch" />
         <Strings>
-          <ButtonText>BlueprintSearchWindow</ButtonText>
+          <ButtonText>BlueprintSearchVS</ButtonText>
         </Strings>
       </Button>
     </Buttons>

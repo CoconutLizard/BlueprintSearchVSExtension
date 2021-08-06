@@ -25,6 +25,8 @@ namespace BlueprintSearch.Commands.CommandHelpers
 
 		public const string CommmandletFileName = "RunSearchCommandlet.bat";
 
+		private const char QuoteChar = '\"';
+
 		public static void FindPaths()
 		{
 			List<Project> ProjectsList = new List<Project>();
@@ -87,6 +89,11 @@ namespace BlueprintSearch.Commands.CommandHelpers
 				MessageBox.Show("BlueprintSearchVS could not find CommandletScript.", "BlueprintSearchVS Warning");
 			}
 			return OutPath;
+		}
+
+		public static string AddQuotes(string InStringToQuote)
+		{
+			return QuoteChar + InStringToQuote + QuoteChar;
 		}
 	}
 

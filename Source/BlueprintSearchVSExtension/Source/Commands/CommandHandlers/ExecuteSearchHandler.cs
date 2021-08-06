@@ -13,7 +13,7 @@ namespace BlueprintSearch.Commands.CommandHandlers
 	{
 		public List<BlueprintJsonObject> MakeSearch(string InSearchValue)
 		{
-			string Arguments = PathFinderHelper.UECommandLineFilePath + " " + PathFinderHelper.UProjectFilePath + " " + InSearchValue;
+			string Arguments = PathFinderHelper.UECommandLineFilePath + " " + PathFinderHelper.UProjectFilePath + " " + PathFinderHelper.AddQuotes(InSearchValue);
 			System.Diagnostics.Process Proc = new System.Diagnostics.Process();
 			Proc.StartInfo.FileName = PathFinderHelper.CommmandletFileName;
 			Proc.StartInfo.WorkingDirectory = PathFinderHelper.WorkingDirectoryPath;
