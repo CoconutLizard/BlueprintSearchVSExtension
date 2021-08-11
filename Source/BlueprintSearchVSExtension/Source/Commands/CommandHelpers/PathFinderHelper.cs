@@ -92,18 +92,6 @@ namespace BlueprintSearch.Commands.CommandHelpers
 			}
 		}
 
-		public static string GetScriptPath()
-		{
-			string RootPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			string OutPath = Path.Combine(RootPath, "Source\\Scripts\\");
-			if (!File.Exists(Path.Combine(OutPath, CommmandletFileName)))
-			{
-				OutPath = "";
-				MessageBox.Show("BlueprintSearchVS could not find CommandletScript.", "BlueprintSearchVS Warning");
-			}
-			return OutPath;
-		}
-
 		public static string AddQuotes(string InStringToQuote)
 		{
 			return QuoteChar + InStringToQuote + QuoteChar;
