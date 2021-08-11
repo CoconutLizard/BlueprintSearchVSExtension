@@ -22,6 +22,7 @@ namespace BlueprintSearch
 		public BlueprintSearchWindowControl()
 		{
 			this.InitializeComponent();
+			Commands.CommandHelpers.PathFinderHelper.EnableSearchbarButton += EnableButtonHandler;
 		}
 
 		public void SearchBarGotFocus(object InSenderObject, RoutedEventArgs InEventArgs)
@@ -37,6 +38,12 @@ namespace BlueprintSearch
 			{
 				SearchButtonClick(InSenderObject, null);
 			}
+		}
+
+		public void EnableButtonHandler(bool IsEnabled)
+		{
+			SearchButton.IsEnabled = IsEnabled;
+			SearchValue.IsEnabled = IsEnabled;
 		}
 
 		/// <summary>

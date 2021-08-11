@@ -31,8 +31,8 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="auto"/>
 			</Grid.RowDefinitions>
-			<TextBox x:Name="SearchValue" BorderThickness="0.01" GotFocus="SearchBarGotFocus" KeyDown="OnKeyDownHandler" Grid.Column="0" Grid.Row="0">Type something to search</TextBox>
-			<Button Content="Search" Click="SearchButtonClick" Name="SearchButton" BorderThickness="0.01" Grid.Column="1" Grid.Row="0"/>
+			<TextBox x:Name="SearchValue" BorderThickness="0.01" GotFocus="SearchBarGotFocus" IsEnabled="False" KeyDown="OnKeyDownHandler" Grid.Column="0" Grid.Row="0">Type something to search</TextBox>
+			<Button Content="Search" Click="SearchButtonClick" Name="SearchButton" IsEnabled="False"  BorderThickness="0.01" Grid.Column="1" Grid.Row="0"/>
 		</Grid>
 		<TreeView x:Name="ResultsView" Grid.Row="2">
 			<TreeView.ItemTemplate>

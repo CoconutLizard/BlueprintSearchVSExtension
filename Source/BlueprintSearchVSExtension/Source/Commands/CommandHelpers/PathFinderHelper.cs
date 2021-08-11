@@ -27,6 +27,10 @@ namespace BlueprintSearch.Commands.CommandHelpers
 
 		private const char QuoteChar = '\"';
 
+		public delegate void EnableButton(bool IsEnabled);
+
+		public static event EnableButton EnableSearchbarButton;
+
 		public static void FindPaths()
 		{
 			List<Project> ProjectsList = new List<Project>();
@@ -61,9 +65,18 @@ namespace BlueprintSearch.Commands.CommandHelpers
 				if (!File.Exists(UECommandLineFilePath))
 				{
 					MessageBox.Show("BlueprintSearchVS could not find Unreal's command line executable.\nCheck that you have an up to date Development Editor build.", "BlueprintSearchVS Warning");
+					return;
 				}
 
-				WorkingDirectoryPath = GetScriptPath();
+				string ExtensionRootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+				WorkingDirectoryPath = Path.Combine(ExtensionRootFolder, "Source\\Scripts\\");
+				if (!File.Exists(Path.Combine(WorkingDirectoryPath, CommmandletFileName)))
+				{
+					MessageBox.Show("BlueprintSearchVS could not find CommandletScript.", "BlueprintSearchVS Warning");
+					return;
+				}
+
+				EnableSearchbarButton(true);
 			}
 		}
 
