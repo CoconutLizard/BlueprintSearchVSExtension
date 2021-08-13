@@ -23,13 +23,14 @@ namespace BlueprintSearch.Commands.CommandHelpers
 
 		public static string WorkingDirectoryPath { get; private set; }
 
+		public static bool EnableButtons { get; private set; } = false;
+
+		public static string SearchBoxErrorText { get; private set; }
+
 		public const string CommmandletFileName = "RunSearchCommandlet.bat";
 
 		private const char QuoteChar = '\"';
 
-		public delegate void EnableButton(bool IsEnabled);
-
-		public static event EnableButton EnableSearchbarButton;
 
 		public static void FindPaths()
 		{
@@ -57,14 +58,23 @@ namespace BlueprintSearch.Commands.CommandHelpers
 				if (!File.Exists(UProjectFilePath))
 				{
 					MessageBox.Show("BlueprintSearchVS could not find an Unreal project in this solution.", "BlueprintSearchVS Warning");
+					SearchBoxErrorText = "BlueprintSearchVS could not find an Unreal project in this solution.";
 					return;
 				}
 
 				string UERootPath = GetUnrealCommandLineExecutablePath();
+				if(UERootPath.Length == 0)
+				{
+					MessageBox.Show("BlueprintSearchVS could not find a .uhtmanifest file.\nPlease build your Game Project.", "BlueprintSearchVS Warning");
+					SearchBoxErrorText = "BlueprintSearchVS could not find a .uhtmanifest file.\nPlease build your Game Project.";
+					return;
+				}
+
 				UECommandLineFilePath = Path.Combine(UERootPath, "Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe").Replace('\\', '/');
 				if (!File.Exists(UECommandLineFilePath))
 				{
 					MessageBox.Show("BlueprintSearchVS could not find Unreal's command line executable.\nCheck that you have an up to date Development Editor build.", "BlueprintSearchVS Warning");
+					SearchBoxErrorText = "BlueprintSearchVS could not find Unreal's command line executable.\nCheck that you have an up to date Development Editor build.";
 					return;
 				}
 
@@ -73,10 +83,11 @@ namespace BlueprintSearch.Commands.CommandHelpers
 				if (!File.Exists(Path.Combine(WorkingDirectoryPath, CommmandletFileName)))
 				{
 					MessageBox.Show("BlueprintSearchVS could not find CommandletScript.", "BlueprintSearchVS Warning");
+					SearchBoxErrorText = "BlueprintSearchVS could not find CommandletScript.";
 					return;
 				}
 
-				EnableSearchbarButton(true);
+				EnableButtons = true;
 			}
 		}
 
@@ -85,11 +96,17 @@ namespace BlueprintSearch.Commands.CommandHelpers
 			string UhtManifestPath = "Intermediate\\Build\\Win64\\$ProjectName$Editor\\Development\\$ProjectName$Editor.uhtmanifest";
 			string ProjectName = Path.GetFileNameWithoutExtension(DTEService.Solution.FileName);
 			string UhtManifestRelativePath = Path.Combine(Path.GetFullPath(Path.Combine(DTEService.Solution.FullName, "..")), UhtManifestPath.Replace("$ProjectName$", ProjectName));
-			using (StreamReader Reader = new StreamReader(UhtManifestRelativePath))
+			string CommandLinePath = string.Empty;
+			if(File.Exists(UhtManifestRelativePath))
 			{
-				var UhtManifestObject = JsonConvert.DeserializeObject<UhtManifestJsonObject>(Reader.ReadToEnd());
-				return UhtManifestObject.RootLocalPath;
+				using (StreamReader Reader = new StreamReader(UhtManifestRelativePath))
+				{
+					var UhtManifestObject = JsonConvert.DeserializeObject<UhtManifestJsonObject>(Reader.ReadToEnd());
+					CommandLinePath = UhtManifestObject.RootLocalPath;
+				}
 			}
+
+			return CommandLinePath;
 		}
 
 		public static string AddQuotes(string InStringToQuote)

@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BlueprintSearch
 {
@@ -22,7 +23,14 @@ namespace BlueprintSearch
 		public BlueprintSearchWindowControl()
 		{
 			this.InitializeComponent();
-			Commands.CommandHelpers.PathFinderHelper.EnableSearchbarButton += EnableButtonHandler;
+			if(!Commands.CommandHelpers.PathFinderHelper.EnableButtons)
+			{
+				SearchButton.IsEnabled = false;
+				SearchValue.IsEnabled = false;
+				SearchValue.Text = Commands.CommandHelpers.PathFinderHelper.SearchBoxErrorText;
+				SearchValue.BorderThickness = new Thickness(1.0);
+				SearchValue.BorderBrush = Brushes.Red;
+			}
 		}
 
 		public void SearchBarGotFocus(object InSenderObject, RoutedEventArgs InEventArgs)
@@ -38,12 +46,6 @@ namespace BlueprintSearch
 			{
 				SearchButtonClick(InSenderObject, null);
 			}
-		}
-
-		public void EnableButtonHandler(bool IsEnabled)
-		{
-			SearchButton.IsEnabled = IsEnabled;
-			SearchValue.IsEnabled = IsEnabled;
 		}
 
 		/// <summary>
