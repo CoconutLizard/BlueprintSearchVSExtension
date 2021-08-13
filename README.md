@@ -24,6 +24,8 @@ Tested on engine versions: 4.26
 
 5. Open Visual Studio and Rebuild your UE4 project.
 
+NOTE: If BlueprintSearchVS fails find one of the file needed to execute a search. Is possible, after fixing the error, to execute another search using the button inside the BlueprintSearchVS submenu.
+
 ## Using BlueprintSearchVS
 
 1. Open an Unreal Engine 4 project built against a version of the engine with the plugin in.
@@ -54,5 +56,4 @@ Examples on how to use filters:
 
 Blueprint(Name=MyBlueprint && Nodes(MyNode) && Functions(MyFunction)) will return all the nodes called MyNode and all the functions called MyFunction located inside Blueprints that contain MyBlueprint in their name.
 Pins(PinCategory=int && IsReference=1) will return all the int references.
-
 

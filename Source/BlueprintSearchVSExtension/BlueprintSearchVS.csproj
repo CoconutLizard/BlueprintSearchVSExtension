@@ -45,6 +45,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Commands\SearchPathsCommand.cs" />
     <Compile Include="Source\Commands\CommandHelpers\PathFinderHelper.cs" />
     <Compile Include="Source\UI\ToolWindows\BlueprintSearchWindow\BlueprintSearchVSWindow.cs" />
     <Compile Include="Source\Commands\BlueprintSearchVSWindowCommand.cs" />
@@ -61,6 +62,7 @@
     <None Include="Config\source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Resources\cogIcon.png" />
     <Content Include="Source\Scripts\RunSearchCommandlet.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

@@ -23,14 +23,8 @@ namespace BlueprintSearch
 		public BlueprintSearchWindowControl()
 		{
 			this.InitializeComponent();
-			if(!Commands.CommandHelpers.PathFinderHelper.EnableButtons)
-			{
-				SearchButton.IsEnabled = false;
-				SearchValue.IsEnabled = false;
-				SearchValue.Text = Commands.CommandHelpers.PathFinderHelper.SearchBoxErrorText;
-				SearchValue.BorderThickness = new Thickness(1.0);
-				SearchValue.BorderBrush = Brushes.Red;
-			}
+			SearchPathsCommand.EnableSearchBar += EnableSearchHandler;
+			EnableSearchHandler(Commands.CommandHelpers.PathFinderHelper.EnableButtons);
 		}
 
 		public void SearchBarGotFocus(object InSenderObject, RoutedEventArgs InEventArgs)
@@ -48,6 +42,25 @@ namespace BlueprintSearch
 			}
 		}
 
+		public void EnableSearchHandler(bool IsEnabled)
+		{
+			if (IsEnabled)
+			{
+				SearchButton.IsEnabled = true;
+				SearchValue.IsEnabled = true;
+				SearchValue.Text = "Type something to search";
+				SearchValue.BorderThickness = new Thickness(0.1);
+				SearchValue.BorderBrush = Brushes.Transparent;
+			}
+			else
+			{
+				SearchButton.IsEnabled = false;
+				SearchValue.IsEnabled = false;
+				SearchValue.Text = Commands.CommandHelpers.PathFinderHelper.SearchBoxErrorText;
+				SearchValue.BorderThickness = new Thickness(1.0);
+				SearchValue.BorderBrush = Brushes.Red;
+			}
+		}
 		/// <summary>
 		/// Handles click on the button by displaying a message box.
 		/// </summary>
