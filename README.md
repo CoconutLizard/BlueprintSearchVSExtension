@@ -14,21 +14,21 @@ Tested on engine versions: 4.26
 
 ## Installing BlueprintSearchVS
 
-1. Clone the repository inside your Unreal Engine plugins folder using your favourite Git client or by clicking the download ZIP button inside the Green Code submenu.
+1. Clone the repository inside your Unreal Engine plugins (<project path>/Engine/Plugins) folder using your favourite Git client or by clicking the download ZIP button inside the Green Code submenu.
 
 2. Run GenerateProjectFiles from your Unreal Engine root folder and Rebuild your engine.
 
 3. Close any open instance of Visual Studio.
 
-4. Open BlueprintSearch.vsix
+4. Open BlueprintSearch.vsix.
 
-5. Open Visual Studio and Rebuild your UE4 project.
+5. Check the relevant product(s) you want to install the extension to.
 
-NOTE: If BlueprintSearchVS fails find one of the file needed to execute a search. Is possible, after fixing the error, to execute another search using the button inside the BlueprintSearchVS submenu.
+6. Open Visual Studio and Rebuild your UE4 project.
 
 ## Using BlueprintSearchVS
 
-1. Open an Unreal Engine 4 project built against a version of the engine with the plugin in.
+1. Open an Unreal Engine 4 project built against a version of the engine with the BlueprintSearch plugin installed.
 
 2. Open the Search Window from the Extensions drop down menu or by clicking Alt + Shift + Control + G.
 

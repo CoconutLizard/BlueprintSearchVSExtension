@@ -38,16 +38,6 @@
 		 other menus or buttons (commands); from a visual point of view you can see the
 		 group as the part of a menu contained between two lines. The parent of a group
 		 must be a menu. -->
-
-	  <Menus>
-		  <Menu guid="guidBlueprintSearchPackageCmdSet" id="BlueprintSearchPackageMenu" priority="0x0700" type="Menu">
-			  <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
-			  <Strings>
-				  <ButtonText>BlueprintSearchVS</ButtonText>
-			  </Strings>
-		  </Menu>
-	  </Menus>
-	
 	<Groups>
 	  <Group guid="guidBlueprintSearchPackageCmdSet" id="MyMenuGroup" priority="0x0600">
 		<Parent guid="guidBlueprintSearchPackageCmdSet" id="BlueprintSearchPackageMenu" />
@@ -69,17 +59,10 @@
 			  <CommandFlag>DynamicVisibility</CommandFlag>
 		  If you do not want an image next to your command, remove the Icon node /> -->
 	  <Button guid="guidBlueprintSearchPackageCmdSet" id="cmdidBlueprintSearchWindowCommand" priority="0x0100" type="Button">
-		<Parent guid="guidBlueprintSearchVSPackageCmdSet" id="MyMenuGroup" />
+		<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
 		<Icon guid="guidImages2" id="bmpPicSearch" />
 		<Strings>
-		  <ButtonText>Open Search Window</ButtonText>
-		</Strings>
-	  </Button>
-	  <Button guid="guidBlueprintSearchVSPackageCmdSet" id="cmdidSearchPaths" priority="0x0100" type="Button">
-		<Parent guid="guidBlueprintSearchVSPackageCmdSet" id="MyMenuGroup" />
-		<Icon guid="guidImages3" id="CogIcon" />
-		<Strings>
-		  <ButtonText>Search For Paths</ButtonText>
+		  <ButtonText>BlueprintSearchVS</ButtonText>
 		</Strings>
 	  </Button>
 	</Buttons>
@@ -91,9 +74,7 @@
 			bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
 			inside a button definition. An important aspect of this declaration is that the element id
 			must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-	  <Bitmap guid="guidImages1" href="..\Resources\BlueprintSearchCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
 	  <Bitmap guid="guidImages2" href="..\Resources\BlueprintSearchWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
-	  <Bitmap guid="guidImages3" href="..\Resources\cogIcon.png" usedList="CogIcon"/>
 	</Bitmaps>
   </Commands>
 
@@ -124,15 +105,6 @@
 	  <IDSymbol name="bmpPicStrikethrough" value="6" />
 	</GuidSymbol>
   
-	<GuidSymbol value="{a1c3e81b-1453-4db2-8d70-fa4805e54982}" name="guidImages1">
-	  <IDSymbol name="bmpPic1" value="1" />
-	  <IDSymbol name="bmpPic2" value="2" />
-	  <IDSymbol name="bmpPicSearch" value="3" />
-	  <IDSymbol name="bmpPicX" value="4" />
-	  <IDSymbol name="bmpPicArrows" value="5" />
-	  <IDSymbol name="bmpPicStrikethrough" value="6" />
-	</GuidSymbol>
-  
 	<GuidSymbol value="{9d53a84d-f4bb-4c46-a018-2984f6af4d98}" name="guidImages2">
 	  <IDSymbol name="bmpPic1" value="1" />
 	  <IDSymbol name="bmpPic2" value="2" />
@@ -145,10 +117,6 @@
 	<GuidSymbol value="{3e04786e-cd89-46c2-9786-322abd1c10fb}" name="guidBlueprintSearchVSPackageCmdSet">
 	  <IDSymbol value="4128" name="MyMenuGroup" />
 	  <IDSymbol value="256" name="cmdidSearchPaths" />
-	</GuidSymbol>
-  
-	<GuidSymbol value="{014d2a53-ee26-4a3e-888f-7416539e9e20}" name="guidImages3">
-	  <IDSymbol name="CogIcon" value="1" />
 	</GuidSymbol>
   </Symbols>
 </CommandTable>

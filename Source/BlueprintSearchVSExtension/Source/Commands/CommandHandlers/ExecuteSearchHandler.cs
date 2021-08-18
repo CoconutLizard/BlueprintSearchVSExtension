@@ -6,6 +6,7 @@ using BlueprintSearch.Commands.CommandHelpers;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows;
 
 namespace BlueprintSearch.Commands.CommandHandlers
 {
@@ -13,6 +14,13 @@ namespace BlueprintSearch.Commands.CommandHandlers
 	{
 		public List<BlueprintJsonObject> MakeSearch(string InSearchValue)
 		{
+			if (PathFinderHelper.UECommandLineFilePath.Length == 0 || PathFinderHelper.UProjectFilePath.Length == 0 || PathFinderHelper.WorkingDirectoryPath.Length == 0)
+			{
+				if (!PathFinderHelper.FindPaths())
+				{
+					return new List<BlueprintJsonObject>() { new BlueprintJsonObject(string.Empty) };
+				}
+			}
 			string Arguments = PathFinderHelper.UECommandLineFilePath + " " + PathFinderHelper.UProjectFilePath + " " + PathFinderHelper.AddQuotes(InSearchValue);
 			System.Diagnostics.Process Proc = new System.Diagnostics.Process();
 			Proc.StartInfo.FileName = PathFinderHelper.CommmandletFileName;
