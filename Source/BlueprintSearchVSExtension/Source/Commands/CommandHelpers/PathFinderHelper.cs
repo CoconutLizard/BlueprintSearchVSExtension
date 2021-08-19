@@ -75,7 +75,7 @@ namespace BlueprintSearch.Commands.CommandHelpers
 				WorkingDirectoryPath = Path.Combine(ExtensionRootFolder, "Source\\Scripts\\");
 				if (!File.Exists(Path.Combine(WorkingDirectoryPath, CommmandletFileName)))
 				{
-					MessageBox.Show("BlueprintSearchVS will not work as it could not find CommandletScript.", "BlueprintSearchVS Warning");
+					MessageBox.Show("BlueprintSearchVS will not work as it could not find CommandletScript.\nPlease uninstall and re-install BlueprintSearchVS", "BlueprintSearchVS Warning");
 					return false;
 				}
 
