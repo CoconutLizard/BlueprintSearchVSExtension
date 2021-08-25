@@ -26,11 +26,13 @@ void FiBResultsToJsonWriter::WriteSearchResultToJson(const FSearchResult& Search
 	const FString Value = ImmaginaryBlueprintAccessor->GetInfo(Category, DisplayString);
 	JsonWriter->WriteValue(TEXT("Value"), Value);
 	JsonWriter->WriteArrayStart("Children");
-	for (const FSearchResult& Child : SearchResult->Children)
+	const TArray<FImaginaryFiBDataSharedPtr> ImmaginaryBlueprintChildren = ImmaginaryBlueprintAccessor->GetParsedChildren(SearchResult->Children);
+	if (ImmaginaryBlueprintChildren.Num() == SearchResult->Children.Num())
 	{
-		const FText ChildDisplayString = Child->GetDisplayString();
-		const FImaginaryFiBDataSharedPtr ImmaginaryBlueprintChild = ImmaginaryBlueprintAccessor->GetParsedChild(ChildDisplayString);
-		WriteSearchResultToJson(Child, ImmaginaryBlueprintChild);
+		for (uint8 CurrentChild = 0; CurrentChild < SearchResult->Children.Num(); CurrentChild++)
+		{
+			WriteSearchResultToJson(SearchResult->Children[CurrentChild], ImmaginaryBlueprintChildren[CurrentChild]);
+		}
 	}
 	JsonWriter->WriteArrayEnd();
 	JsonWriter->WriteObjectEnd();
