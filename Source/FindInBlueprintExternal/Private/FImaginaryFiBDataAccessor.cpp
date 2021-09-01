@@ -70,34 +70,107 @@ FString FImaginaryFiBDataAccessor::GetInfo(const FText& Category, const FText& D
 	return OutInfo;
 }
 
-FImaginaryFiBDataSharedPtr FImaginaryFiBDataAccessor::GetParsedChild(const FText& DisplayText)
+TArray<FImaginaryFiBDataSharedPtr> FImaginaryFiBDataAccessor::GetParsedChildren(const TArray<FSearchResult>& SearchResultChildren)
 {
-	FImaginaryFiBDataSharedPtr OutChild;
-	for (const FImaginaryFiBDataSharedPtr& Child : ParsedChildData)
+	TArray<FImaginaryFiBDataSharedPtr> OutChildren;
+	if (SearchResultChildren.Num() > 0)
 	{
-		TSharedPtr<FImaginaryFiBDataAccessor, ESPMode::ThreadSafe> ChildAccessor = StaticCastSharedPtr<FImaginaryFiBDataAccessor>(Child);
-		if (ChildAccessor->LookUpValue(FFindInBlueprintSearchTags::FiB_Name, DisplayText))
+		uint8 CurrentSearchResultChild = 0;
+		for (const FImaginaryFiBDataSharedPtr& Child : ParsedChildData)
 		{
-			OutChild = Child;
-			break;
-		}
-	}
-
-	if (!OutChild)
-	{
-		for (const TPair<FindInBlueprintsHelpers::FSimpleFTextKeyStorage, FSearchableValueInfo>& Child : ParsedTagsAndValues)
-		{
-			const FSearchableValueInfoHelper ValueHelper(Child.Value, LookupTablePtr);
-			const FString CommentMetadata = FString::Printf(TEXT("%s: %s"), *Child.Key.Text.ToString(), *ValueHelper.GetDisplayString());
-			if (CommentMetadata.Equals(DisplayText.ToString()))
+			TSharedPtr<FImaginaryFiBDataAccessor, ESPMode::ThreadSafe> ChildAccessor = StaticCastSharedPtr<FImaginaryFiBDataAccessor>(Child);
+			if (ChildAccessor->LookUpValue(FFindInBlueprintSearchTags::FiB_Name, SearchResultChildren[CurrentSearchResultChild]->GetDisplayString()))
 			{
-				OutChild = AsShared();
-				break;
+				if (ChildAccessor->GetValue(FFindInBlueprintSearchTags::FiB_NodeGuid).Len() > 0)
+				{
+					if (ChildAccessor->CheckNode(SearchResultChildren[CurrentSearchResultChild]->Children))
+					{
+						OutChildren.Add(Child);
+						CurrentSearchResultChild++;
+					}
+				}
+				else
+				{
+					OutChildren.Add(Child);
+					CurrentSearchResultChild++;
+				}
+
+				if (CurrentSearchResultChild == SearchResultChildren.Num())
+				{
+					break;
+				}
+			}
+			
+		}
+
+		if (CurrentSearchResultChild < SearchResultChildren.Num())
+		{
+			for (const TPair<FindInBlueprintsHelpers::FSimpleFTextKeyStorage, FSearchableValueInfo>& Child : ParsedTagsAndValues)
+			{
+				const FSearchableValueInfoHelper ValueHelper(Child.Value, LookupTablePtr);
+				const FString CommentMetadata = FString::Printf(TEXT("%s: %s"), *Child.Key.Text.ToString(), *ValueHelper.GetDisplayString());
+				
+				if (CommentMetadata.Equals(SearchResultChildren[CurrentSearchResultChild]->GetDisplayString().ToString()))
+				{
+					OutChildren.Add(AsShared());
+					CurrentSearchResultChild++;
+					if (CurrentSearchResultChild == SearchResultChildren.Num())
+					{
+						break;
+					}
+				}
 			}
 		}
 	}
+	return OutChildren;
+}
 
-	return OutChild;
+bool FImaginaryFiBDataAccessor::CheckNode(const TArray<FSearchResult>& SearchResultChildren)
+{
+	bool OutIsNodeOk = true;
+	if (SearchResultChildren.Num() > 0)
+	{
+		uint8 CurrentSearchResultChild = 0;
+		for (const FImaginaryFiBDataSharedPtr& Child : ParsedChildData)
+		{
+			TSharedPtr<FImaginaryFiBDataAccessor, ESPMode::ThreadSafe> ChildAccessor = StaticCastSharedPtr<FImaginaryFiBDataAccessor>(Child);
+			if (ChildAccessor->LookUpValue(FFindInBlueprintSearchTags::FiB_Name, SearchResultChildren[CurrentSearchResultChild]->GetDisplayString()))
+			{
+				if (ChildAccessor->CheckNode(SearchResultChildren[CurrentSearchResultChild]->Children))
+				{
+					CurrentSearchResultChild++;
+				}
+				if (CurrentSearchResultChild == SearchResultChildren.Num())
+				{
+					break;
+				}
+			}
+		}
+
+		if (CurrentSearchResultChild < SearchResultChildren.Num())
+		{
+			for (const TPair<FindInBlueprintsHelpers::FSimpleFTextKeyStorage, FSearchableValueInfo>& Child : ParsedTagsAndValues)
+			{
+				const FSearchableValueInfoHelper ValueHelper(Child.Value, LookupTablePtr);
+				const FString CommentMetadata = FString::Printf(TEXT("%s: %s"), *Child.Key.Text.ToString(), *ValueHelper.GetDisplayString());
+
+				if (CommentMetadata.Equals(SearchResultChildren[CurrentSearchResultChild]->GetDisplayString().ToString()))
+				{
+					CurrentSearchResultChild++;
+					if (CurrentSearchResultChild == SearchResultChildren.Num())
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		if (CurrentSearchResultChild < SearchResultChildren.Num())
+		{
+			OutIsNodeOk = false;
+		}
+	}
+	return OutIsNodeOk;
 }
 
 bool FImaginaryFiBDataAccessor::LookUpValue(const FText& Category, const FText& DisplayText)

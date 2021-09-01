@@ -14,7 +14,8 @@ public:
 	}
 
 	FString GetInfo(const FText& Category, const FText& DisplayText) const;
-	FImaginaryFiBDataSharedPtr GetParsedChild(const FText& DisplayText);
+	TArray<FImaginaryFiBDataSharedPtr> GetParsedChildren(const TArray<FSearchResult>& SearchResultChildren);
+	bool CheckNode(const TArray<FSearchResult>& SearchResultChildren);
 	bool LookUpValue(const FText& Category, const FText& DisplayText);
 	FString GetValue(const FText& Key) const;
 };
