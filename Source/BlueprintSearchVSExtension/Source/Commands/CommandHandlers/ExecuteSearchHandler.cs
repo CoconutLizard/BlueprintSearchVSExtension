@@ -14,32 +14,40 @@ namespace BlueprintSearch.Commands.CommandHandlers
 	{
 		public List<BlueprintJsonObject> MakeSearch(string InSearchValue)
 		{
-			if (PathFinderHelper.UECommandLineFilePath.Length == 0 || PathFinderHelper.UProjectFilePath.Length == 0 || PathFinderHelper.WorkingDirectoryPath.Length == 0)
+			List<BlueprintJsonObject> SearchResults = new List<BlueprintJsonObject>() { new BlueprintJsonObject(string.Empty) };
+			if (PathFinderHelper.UECommandLineFilePath.Length > 0 && PathFinderHelper.UProjectFilePath.Length > 0 && PathFinderHelper.WorkingDirectoryPath.Length > 0)
 			{
-				if (!PathFinderHelper.FindPaths())
+				string Arguments = PathFinderHelper.UECommandLineFilePath + " " + PathFinderHelper.UProjectFilePath + " " + PathFinderHelper.AddQuotes(InSearchValue);
+				System.Diagnostics.Process Proc = new System.Diagnostics.Process();
+				Proc.StartInfo.FileName = PathFinderHelper.CommmandletFileName;
+				Proc.StartInfo.WorkingDirectory = PathFinderHelper.WorkingDirectoryPath;
+				Proc.StartInfo.Arguments = Arguments;
+				Proc.StartInfo.UseShellExecute = true;
+				Proc.Start();
+				Proc.WaitForExit();
+				string SearchResultsPath = Path.Combine(PathFinderHelper.WorkingDirectoryPath, "SearchResults.json");
+				if (File.Exists(SearchResultsPath))
 				{
-					return new List<BlueprintJsonObject>() { new BlueprintJsonObject(string.Empty) };
+					using (StreamReader Reader = new StreamReader(SearchResultsPath))
+					{
+						SearchResults = JsonConvert.DeserializeObject<List<BlueprintJsonObject>>(Reader.ReadToEnd());
+						if (SearchResults == null)
+						{
+							SearchResults = new List<BlueprintJsonObject>() { new BlueprintJsonObject("No Results Found") };
+						}
+					}
+				}
+				else
+				{
+					MessageBox.Show("BlueprintSearchVS couldn't find SearchResults.json.\nPlease install FindInBlueprintsExternal Plugin inside \"/Engine/Plugins\"", "BlueprintSearchVS Warning");
 				}
 			}
-			string Arguments = PathFinderHelper.UECommandLineFilePath + " " + PathFinderHelper.UProjectFilePath + " " + PathFinderHelper.AddQuotes(InSearchValue);
-			System.Diagnostics.Process Proc = new System.Diagnostics.Process();
-			Proc.StartInfo.FileName = PathFinderHelper.CommmandletFileName;
-			Proc.StartInfo.WorkingDirectory = PathFinderHelper.WorkingDirectoryPath;
-			Proc.StartInfo.Arguments = Arguments;
-			Proc.StartInfo.UseShellExecute = true;
-			Proc.Start();
-			Proc.WaitForExit();
-			string SearchResultsPath = Path.Combine( PathFinderHelper.WorkingDirectoryPath, "SearchResults.json");
-			using (StreamReader Reader = new StreamReader(SearchResultsPath))
+			else
 			{
-				var SearchResults = JsonConvert.DeserializeObject<List<BlueprintJsonObject>>(Reader.ReadToEnd());
-				if(SearchResults == null)
-				{
-					SearchResults = new List<BlueprintJsonObject>() { new BlueprintJsonObject("No Results Found") };
-				}
+				PathFinderHelper.FindPaths();
+			}
 
-				return SearchResults;
-			}
+			return SearchResults;
 		}
 	}
 }
