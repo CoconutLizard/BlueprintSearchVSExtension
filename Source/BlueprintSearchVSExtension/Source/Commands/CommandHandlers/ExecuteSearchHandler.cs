@@ -15,7 +15,13 @@ namespace BlueprintSearch.Commands.CommandHandlers
 		public List<BlueprintJsonObject> MakeSearch(string InSearchValue)
 		{
 			List<BlueprintJsonObject> SearchResults = new List<BlueprintJsonObject>() { new BlueprintJsonObject(string.Empty) };
-			if (PathFinderHelper.UECommandLineFilePath.Length > 0 && PathFinderHelper.UProjectFilePath.Length > 0 && PathFinderHelper.WorkingDirectoryPath.Length > 0)
+			bool PathsFound = true;
+			if (PathFinderHelper.UECommandLineFilePath.Length == 0 || PathFinderHelper.UProjectFilePath.Length == 0 || PathFinderHelper.WorkingDirectoryPath.Length == 0)
+			{
+				PathsFound = PathFinderHelper.FindPaths();
+			}
+
+			if (PathsFound)
 			{
 				string Arguments = PathFinderHelper.UECommandLineFilePath + " " + PathFinderHelper.UProjectFilePath + " " + PathFinderHelper.AddQuotes(InSearchValue);
 				System.Diagnostics.Process Proc = new System.Diagnostics.Process();
@@ -41,10 +47,6 @@ namespace BlueprintSearch.Commands.CommandHandlers
 				{
 					MessageBox.Show("BlueprintSearchVS couldn't find SearchResults.json.\nPlease install FindInBlueprintsExternal Plugin inside \"/Engine/Plugins\"", "BlueprintSearchVS Warning");
 				}
-			}
-			else
-			{
-				PathFinderHelper.FindPaths();
 			}
 
 			return SearchResults;
