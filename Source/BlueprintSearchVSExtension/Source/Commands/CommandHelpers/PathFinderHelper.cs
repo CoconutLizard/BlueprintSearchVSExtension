@@ -40,17 +40,20 @@ namespace BlueprintSearch.Commands.CommandHelpers
 
 			if (ProjectsList.Count > 0)
 			{
-				foreach (Project project in ProjectsList)
+				foreach (Project Project in ProjectsList)
 				{
-					if (project.Name.Equals("UE4"))
+					foreach (ProjectItem FilterOrFile in Project.ProjectItems)
 					{
-						//We know that we are in a ue4 project, so we analyze all the ue4 metadata we need.
 						const string UProjectExtension = ".uproject";
-						UProjectFilePath = Path.GetFullPath(Path.ChangeExtension(DTEService.Solution.FullName, UProjectExtension)).Replace('\\', '/');
-						break;
+						if (Path.GetExtension(FilterOrFile.Name) == UProjectExtension)
+						{
+							UProjectFilePath = FilterOrFile.GetFullPath().Replace('\\', '/');
+							goto LoopBreak;
+						}
 					}
 				}
 
+				LoopBreak:
 				if (!File.Exists(UProjectFilePath))
 				{
 					MessageBox.Show("BlueprintSearchVS will not work as it could not find an Unreal project in this solution.", "BlueprintSearchVS Warning");
@@ -88,15 +91,18 @@ namespace BlueprintSearch.Commands.CommandHelpers
 		private static string GetUnrealCommandLineExecutablePath()
 		{
 			string UhtManifestPath = "Intermediate\\Build\\Win64\\$ProjectName$Editor\\Development\\$ProjectName$Editor.uhtmanifest";
-			string ProjectName = Path.GetFileNameWithoutExtension(DTEService.Solution.FileName);
-			string UhtManifestRelativePath = Path.Combine(Path.GetFullPath(Path.Combine(DTEService.Solution.FullName, "..")), UhtManifestPath.Replace("$ProjectName$", ProjectName));
+			string ProjectName = Path.GetFileNameWithoutExtension(UProjectFilePath);
+			string UhtManifestRelativePath = Path.Combine(Path.GetFullPath(Path.Combine(UProjectFilePath, "..")), UhtManifestPath.Replace("$ProjectName$", ProjectName));
 			string CommandLinePath = string.Empty;
 			if(File.Exists(UhtManifestRelativePath))
 			{
 				using (StreamReader Reader = new StreamReader(UhtManifestRelativePath))
 				{
 					var UhtManifestObject = JsonConvert.DeserializeObject<UhtManifestJsonObject>(Reader.ReadToEnd());
-					CommandLinePath = UhtManifestObject.RootLocalPath;
+					if(UhtManifestObject != null)
+					{
+						CommandLinePath = UhtManifestObject.RootLocalPath;
+					}
 				}
 			}
 
