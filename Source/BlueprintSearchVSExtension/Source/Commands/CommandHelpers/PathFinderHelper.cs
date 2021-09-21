@@ -38,6 +38,7 @@ namespace BlueprintSearch.Commands.CommandHelpers
 				ProjectsList.AddRange(ProjectsList[i].ProjectItems.Cast<ProjectItem>().Select(x => x.SubProject).OfType<Project>());
 			}
 
+			//Check if this function is called after all the projects in the solution have been loaded
 			if (ProjectsList.Count > 0)
 			{
 				foreach (Project Project in ProjectsList)
