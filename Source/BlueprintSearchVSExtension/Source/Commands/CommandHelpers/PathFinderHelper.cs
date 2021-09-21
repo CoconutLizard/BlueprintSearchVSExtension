@@ -42,18 +42,12 @@ namespace BlueprintSearch.Commands.CommandHelpers
 			{
 				foreach (Project Project in ProjectsList)
 				{
-					foreach (ProjectItem FilterOrFile in Project.ProjectItems)
+					if(CheckProjectForUEFiles(Project))
 					{
-						const string UProjectExtension = ".uproject";
-						if (Path.GetExtension(FilterOrFile.Name) == UProjectExtension)
-						{
-							UProjectFilePath = FilterOrFile.GetFullPath().Replace('\\', '/');
-							goto LoopBreak;
-						}
+						break;
 					}
 				}
 
-				LoopBreak:
 				if (!File.Exists(UProjectFilePath))
 				{
 					MessageBox.Show("BlueprintSearchVS will not work as it could not find an Unreal project in this solution.", "BlueprintSearchVS Warning");
@@ -112,6 +106,21 @@ namespace BlueprintSearch.Commands.CommandHelpers
 		public static string AddQuotes(string InStringToQuote)
 		{
 			return QuoteChar + InStringToQuote + QuoteChar;
+		}
+
+		private static bool CheckProjectForUEFiles(Project Project)
+		{
+			bool OutIsUnrealProject = false;
+			foreach (ProjectItem FilterOrFile in Project.ProjectItems)
+			{
+				const string UProjectExtension = ".uproject";
+				if (Path.GetExtension(FilterOrFile.Name) == UProjectExtension)
+				{
+					UProjectFilePath = FilterOrFile.GetFullPath().Replace('\\', '/');
+					OutIsUnrealProject = true;
+				}
+			}
+			return OutIsUnrealProject;
 		}
 	}
 
