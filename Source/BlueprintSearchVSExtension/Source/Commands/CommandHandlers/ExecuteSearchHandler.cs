@@ -12,26 +12,28 @@ namespace BlueprintSearch.Commands.CommandHandlers
 {
 	public class ExecuteSearchHandler
 	{
+		private const string CommandLineArguments = "-NoShaderCompile -SILENT -run=FiB";
+
 		public List<BlueprintJsonObject> MakeSearch(string InSearchValue)
 		{
 			List<BlueprintJsonObject> SearchResults = new List<BlueprintJsonObject>() { new BlueprintJsonObject(string.Empty) };
 			bool PathsFound = true;
-			if (PathFinderHelper.UECommandLineFilePath.Length == 0 || PathFinderHelper.UProjectFilePath.Length == 0 || PathFinderHelper.WorkingDirectoryPath.Length == 0)
+			if (PathFinderHelper.UEEditorFilePath.Length == 0 || PathFinderHelper.UProjectFilePath.Length == 0 || PathFinderHelper.WorkingDirectoryPath.Length == 0)
 			{
 				PathsFound = PathFinderHelper.FindPaths();
 			}
 
 			if (PathsFound)
 			{
-				string Arguments = PathFinderHelper.UECommandLineFilePath + " " + PathFinderHelper.UProjectFilePath + " " + PathFinderHelper.AddQuotes(InSearchValue);
+				string Arguments = PathFinderHelper.UProjectFilePath + " " + CommandLineArguments + " " + PathFinderHelper.AddQuotes(InSearchValue);
 				System.Diagnostics.Process Proc = new System.Diagnostics.Process();
-				Proc.StartInfo.FileName = PathFinderHelper.CommmandletFileName;
-				Proc.StartInfo.WorkingDirectory = PathFinderHelper.WorkingDirectoryPath;
+				Proc.StartInfo.FileName = PathFinderHelper.UnrealEditorExe;
+				Proc.StartInfo.WorkingDirectory = PathFinderHelper.UEEditorFilePath;
 				Proc.StartInfo.Arguments = Arguments;
 				Proc.StartInfo.UseShellExecute = true;
 				Proc.Start();
 				Proc.WaitForExit();
-				string SearchResultsPath = Path.Combine(PathFinderHelper.WorkingDirectoryPath, "SearchResults.json");
+				string SearchResultsPath = Path.Combine(PathFinderHelper.UEEditorFilePath, "SearchResults.json");
 				if (File.Exists(SearchResultsPath))
 				{
 					using (StreamReader Reader = new StreamReader(SearchResultsPath))
@@ -42,6 +44,7 @@ namespace BlueprintSearch.Commands.CommandHandlers
 							SearchResults = new List<BlueprintJsonObject>() { new BlueprintJsonObject("No Results Found") };
 						}
 					}
+					File.Delete(SearchResultsPath);
 				}
 				else
 				{
