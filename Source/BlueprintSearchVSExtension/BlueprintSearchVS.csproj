@@ -61,10 +61,6 @@
     <None Include="Config\source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Source\Scripts\RunSearchCommandlet.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
