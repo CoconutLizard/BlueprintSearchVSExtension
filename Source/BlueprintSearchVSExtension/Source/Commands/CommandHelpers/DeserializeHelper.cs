@@ -34,4 +34,16 @@ namespace BlueprintSearch.Commands.CommandHelpers
 		public string ExternalDependenciesFile { get; set; }
 	}
 
+	public class EditorTargetJsonObject
+	{
+		public string TargetName { get; set; }
+		public string Platform { get; set; }
+		public string Configuration { get; set; }
+		public string TargetType { get; set; }
+		public string Architecture { get; set; }
+		public string Project { get; set; }
+		public string Launch { get; set; }
+		public string LaunchCmd { get; set; }
+	}
+
 }

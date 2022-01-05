@@ -23,7 +23,7 @@ namespace BlueprintSearch.Commands.CommandHelpers
 
 		public static string WorkingDirectoryPath { get; private set; } = string.Empty;
 
-		public const string UnrealEditorExe = "UE4Editor.exe";
+		public static string UnrealEditorExe { get; private set; } = string.Empty;
 
 		private const char QuoteChar = '\"';
 
@@ -55,45 +55,94 @@ namespace BlueprintSearch.Commands.CommandHelpers
 					return false;
 				}
 
-				string UERootPath = GetUnrealCommandLineExecutablePath();
-				if(UERootPath.Length == 0)
+				string ProjectName = Path.GetFileNameWithoutExtension(UProjectFilePath);
+
+				string UnrealManifestPath = GetUnrealManifestPath(ProjectName);
+				UhtManifestJsonObject UnrealManifest = GetUnrealManifest(UnrealManifestPath);
+				if(UnrealManifest == null)
 				{
-					MessageBox.Show("BlueprintSearchVS will not work as it could not find a .uhtmanifest file.\nPlease build your Game Project.", "BlueprintSearchVS Warning");
+					MessageBox.Show($"BlueprintSearchVS will not work as it could not find/parse a .uhtmanifest file., expected in \"{UnrealManifestPath}\". \nPlease build your Game Project.", "BlueprintSearchVS Warning");
 					return false;
 				}
 
-				UEEditorFilePath = Path.Combine(UERootPath, "Engine\\Binaries\\Win64\\").Replace('\\', '/');
-				if (!File.Exists(Path.Combine(UEEditorFilePath, UnrealEditorExe)))
+				string UERootPath = UnrealManifest.RootLocalPath;
+				if (UERootPath.Length == 0)
 				{
-					MessageBox.Show("BlueprintSearchVS will not work as it could not find Unreal's editor executable.\nCheck that you have an up to date Development Editor build.", "BlueprintSearchVS Warning");
+					MessageBox.Show($"BlueprintSearchVS will not work as it could not find the project root path from the .uhtmanifest file, loaded from \"{UnrealManifestPath}\".\nPlease build your Game Project.", "BlueprintSearchVS Warning");
 					return false;
 				}
 
+				string EditorTargetPath = GetEditorTargetPath(ProjectName);
+				EditorTargetJsonObject EditorTarget = GetEditorTarget(EditorTargetPath);
+				if(EditorTarget == null)
+				{
+					MessageBox.Show($"BlueprintSearchVS will not work as it could not find/parse a .target file for the Editor, expected in \"{EditorTargetPath}\". \nPlease build your Game Project.", "BlueprintSearchVS Warning");
+					return false;
+				}
+
+				string EditorPath = EditorTarget.Launch;
+				if (EditorPath.Length == 0)
+				{
+					MessageBox.Show($"BlueprintSearchVS will not work as it could not find a the Editor executable, expected to be in the \"Launch\" value of Editor Target file, loaded from \"{EditorTargetPath}\".\nPlease build your Game Project.", "BlueprintSearchVS Warning");
+					return false;
+				}
+
+				EditorPath = EditorPath.Replace("$(EngineDir)/", string.Empty);
+				string EngineDir = Path.Combine(UERootPath, "Engine\\");
+
+				UEEditorFilePath = Path.Combine(EngineDir, EditorPath).Replace('\\', '/');
+				if (!File.Exists(UEEditorFilePath))
+				{
+					MessageBox.Show($"BlueprintSearchVS will not work as it could not find Unreal's editor executable, expected in \"{UEEditorFilePath}\".\nCheck that you have an up to date Development Editor build.", "BlueprintSearchVS Warning");
+					return false;
+				}
+
+				UnrealEditorExe = Path.GetFileName(UEEditorFilePath);
+				UEEditorFilePath = Path.GetDirectoryName(UEEditorFilePath);
 				return true;
 			}
 
 			return false;
 		}
 
-		private static string GetUnrealCommandLineExecutablePath()
+		private static string GetUnrealManifestPath(string ProjectName)
 		{
-			string UhtManifestPath = "Intermediate\\Build\\Win64\\$ProjectName$Editor\\Development\\$ProjectName$Editor.uhtmanifest";
-			string ProjectName = Path.GetFileNameWithoutExtension(UProjectFilePath);
-			string UhtManifestRelativePath = Path.Combine(Path.GetFullPath(Path.Combine(UProjectFilePath, "..")), UhtManifestPath.Replace("$ProjectName$", ProjectName));
-			string CommandLinePath = string.Empty;
+			string UhtManifestRelativePath = "Intermediate\\Build\\Win64\\$ProjectName$Editor\\Development\\$ProjectName$Editor.uhtmanifest";
+			return Path.Combine(Path.GetFullPath(Path.Combine(UProjectFilePath, "..")), UhtManifestRelativePath.Replace("$ProjectName$", ProjectName));
+		}
+
+		private static UhtManifestJsonObject GetUnrealManifest(string UhtManifestRelativePath)
+		{
+			UhtManifestJsonObject UhtManifestObject = null;
 			if(File.Exists(UhtManifestRelativePath))
 			{
 				using (StreamReader Reader = new StreamReader(UhtManifestRelativePath))
 				{
-					var UhtManifestObject = JsonConvert.DeserializeObject<UhtManifestJsonObject>(Reader.ReadToEnd());
-					if(UhtManifestObject != null)
-					{
-						CommandLinePath = UhtManifestObject.RootLocalPath;
-					}
+					UhtManifestObject = JsonConvert.DeserializeObject<UhtManifestJsonObject>(Reader.ReadToEnd());
 				}
 			}
 
-			return CommandLinePath;
+			return UhtManifestObject;
+		}
+
+		private static string GetEditorTargetPath(string ProjectName)
+		{
+			string EditorTargetPath = "Binaries\\Win64\\$ProjectName$Editor.target";
+			return Path.Combine(Path.GetFullPath(Path.Combine(UProjectFilePath, "..")), EditorTargetPath.Replace("$ProjectName$", ProjectName));
+		}
+
+		private static EditorTargetJsonObject GetEditorTarget(string EditorTargetRelativePath)
+		{
+			EditorTargetJsonObject EditorTargetObject = null;
+			if (File.Exists(EditorTargetRelativePath))
+			{
+				using (StreamReader Reader = new StreamReader(EditorTargetRelativePath))
+				{
+					EditorTargetObject = JsonConvert.DeserializeObject<EditorTargetJsonObject>(Reader.ReadToEnd());
+				}
+			}
+
+			return EditorTargetObject;
 		}
 
 		public static string AddQuotes(string InStringToQuote)
