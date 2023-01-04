@@ -27,82 +27,127 @@ namespace BlueprintSearch.Commands.CommandHelpers
 
 		private const char QuoteChar = '\"';
 
-
-		public static bool FindPaths()
+		public static bool FindUEProject(out string FoundProjectPath)
 		{
+			FoundProjectPath = string.Empty;
+
+			Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
 			List<Project> ProjectsList = new List<Project>();
 			ProjectsList.AddRange(DTEService.Solution.Projects.Cast<Project>());
+			List<Project> SubProjectsList = new List<Project>();
 
-			for (int i = 0; i < ProjectsList.Count; i++)
+			foreach (Project project in ProjectsList)
 			{
-				ProjectsList.AddRange(ProjectsList[i].ProjectItems.Cast<ProjectItem>().Select(x => x.SubProject).OfType<Project>());
+				foreach (ProjectItem projectItem in project.ProjectItems)
+				{
+					if (projectItem.SubProject != null)
+					{
+						SubProjectsList.Add(projectItem.SubProject);
+					}
+				}
 			}
+
+			ProjectsList.AddRange(SubProjectsList);
 
 			//Check if this function is called after all the projects in the solution have been loaded
 			if (ProjectsList.Count > 0)
 			{
+				string ProjectFilePath = string.Empty;
 				foreach (Project Project in ProjectsList)
 				{
-					if(CheckProjectForUEFiles(Project))
+					if (CheckProjectForUEFiles(Project, out ProjectFilePath))
 					{
 						break;
 					}
 				}
 
-				if (!File.Exists(UProjectFilePath))
+				if (File.Exists(ProjectFilePath))
+				{
+					FoundProjectPath = ProjectFilePath;
+					return true;
+				}
+				else
 				{
 					MessageBox.Show("BlueprintSearchVS will not work as it could not find an Unreal project in this solution.", "BlueprintSearchVS Warning");
 					return false;
 				}
-
-				string ProjectName = Path.GetFileNameWithoutExtension(UProjectFilePath);
-
-				string UnrealManifestPath = GetUnrealManifestPath(ProjectName);
-				UhtManifestJsonObject UnrealManifest = GetUnrealManifest(UnrealManifestPath);
-				if(UnrealManifest == null)
-				{
-					MessageBox.Show($"BlueprintSearchVS will not work as it could not find/parse a .uhtmanifest file., expected in \"{UnrealManifestPath}\". \nPlease build your Game Project.", "BlueprintSearchVS Warning");
-					return false;
-				}
-
-				string UERootPath = UnrealManifest.RootLocalPath;
-				if (UERootPath.Length == 0)
-				{
-					MessageBox.Show($"BlueprintSearchVS will not work as it could not find the project root path from the .uhtmanifest file, loaded from \"{UnrealManifestPath}\".\nPlease build your Game Project.", "BlueprintSearchVS Warning");
-					return false;
-				}
-
-				string EditorTargetPath = GetEditorTargetPath(ProjectName);
-				EditorTargetJsonObject EditorTarget = GetEditorTarget(EditorTargetPath);
-				if(EditorTarget == null)
-				{
-					MessageBox.Show($"BlueprintSearchVS will not work as it could not find/parse a .target file for the Editor, expected in \"{EditorTargetPath}\". \nPlease build your Game Project.", "BlueprintSearchVS Warning");
-					return false;
-				}
-
-				string EditorPath = EditorTarget.Launch;
-				if (EditorPath.Length == 0)
-				{
-					MessageBox.Show($"BlueprintSearchVS will not work as it could not find a the Editor executable, expected to be in the \"Launch\" value of Editor Target file, loaded from \"{EditorTargetPath}\".\nPlease build your Game Project.", "BlueprintSearchVS Warning");
-					return false;
-				}
-
-				EditorPath = EditorPath.Replace("$(EngineDir)/", string.Empty);
-				string EngineDir = Path.Combine(UERootPath, "Engine\\");
-
-				UEEditorFilePath = Path.Combine(EngineDir, EditorPath).Replace('\\', '/');
-				if (!File.Exists(UEEditorFilePath))
-				{
-					MessageBox.Show($"BlueprintSearchVS will not work as it could not find Unreal's editor executable, expected in \"{UEEditorFilePath}\".\nCheck that you have an up to date Development Editor build.", "BlueprintSearchVS Warning");
-					return false;
-				}
-
-				UnrealEditorExe = Path.GetFileName(UEEditorFilePath);
-				UEEditorFilePath = Path.GetDirectoryName(UEEditorFilePath);
-				return true;
 			}
 
 			return false;
+		}
+
+		private static bool CheckProjectForUEFiles(Project Project, out string FoundUProjPath)
+		{
+			FoundUProjPath = string.Empty;
+			Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+			foreach (ProjectItem FilterOrFile in Project.ProjectItems)
+			{
+				const string UProjectExtension = ".uproject";
+				if (Path.GetExtension(FilterOrFile.Name) == UProjectExtension)
+				{
+					FoundUProjPath = FilterOrFile.GetFullPath().Replace('\\', '/');
+					break;
+				}
+			}
+
+			return !string.IsNullOrEmpty(FoundUProjPath);
+		}
+
+		public static bool FindPaths(string FoundProjectFilePath)
+		{
+			if(string.IsNullOrEmpty(FoundProjectFilePath) || !File.Exists(FoundProjectFilePath))
+			{
+				return false;
+			}
+
+			UProjectFilePath = FoundProjectFilePath;
+
+			string ProjectName = Path.GetFileNameWithoutExtension(UProjectFilePath);
+
+			string UnrealManifestPath = GetUnrealManifestPath(ProjectName);
+			UhtManifestJsonObject UnrealManifest = GetUnrealManifest(UnrealManifestPath);
+			if(UnrealManifest == null)
+			{
+				MessageBox.Show($"BlueprintSearchVS will not work as it could not find/parse a .uhtmanifest file., expected in \"{UnrealManifestPath}\". \nPlease build your Game Project.", "BlueprintSearchVS Warning");
+				return false;
+			}
+
+			string UERootPath = UnrealManifest.RootLocalPath;
+			if (string.IsNullOrEmpty(UERootPath))
+			{
+				MessageBox.Show($"BlueprintSearchVS will not work as it could not find the project root path from the .uhtmanifest file, loaded from \"{UnrealManifestPath}\".\nPlease build your Game Project.", "BlueprintSearchVS Warning");
+				return false;
+			}
+
+			string EditorTargetPath = GetEditorTargetPath(ProjectName);
+			EditorTargetJsonObject EditorTarget = GetEditorTarget(EditorTargetPath);
+			if(EditorTarget == null)
+			{
+				MessageBox.Show($"BlueprintSearchVS will not work as it could not find/parse a .target file for the Editor, expected in \"{EditorTargetPath}\". \nPlease build your Game Project.", "BlueprintSearchVS Warning");
+				return false;
+			}
+
+			string EditorPath = EditorTarget.Launch;
+			if (string.IsNullOrEmpty(EditorPath))
+			{
+				MessageBox.Show($"BlueprintSearchVS will not work as it could not find a the Editor executable, expected to be in the \"Launch\" value of Editor Target file, loaded from \"{EditorTargetPath}\".\nPlease build your Game Project.", "BlueprintSearchVS Warning");
+				return false;
+			}
+
+			EditorPath = EditorPath.Replace("$(EngineDir)/", string.Empty);
+			string EngineDir = Path.Combine(UERootPath, "Engine\\");
+
+			UEEditorFilePath = Path.Combine(EngineDir, EditorPath).Replace('\\', '/');
+			if (!File.Exists(UEEditorFilePath))
+			{
+				MessageBox.Show($"BlueprintSearchVS will not work as it could not find Unreal's editor executable, expected in \"{UEEditorFilePath}\".\nCheck that you have an up to date Development Editor build.", "BlueprintSearchVS Warning");
+				return false;
+			}
+
+			UnrealEditorExe = Path.GetFileName(UEEditorFilePath);
+			UEEditorFilePath = Path.GetDirectoryName(UEEditorFilePath);
+			return true;
 		}
 
 		private static string GetUnrealManifestPath(string ProjectName)
@@ -148,21 +193,6 @@ namespace BlueprintSearch.Commands.CommandHelpers
 		public static string AddQuotes(string InStringToQuote)
 		{
 			return QuoteChar + InStringToQuote + QuoteChar;
-		}
-
-		private static bool CheckProjectForUEFiles(Project Project)
-		{
-			bool OutIsUnrealProject = false;
-			foreach (ProjectItem FilterOrFile in Project.ProjectItems)
-			{
-				const string UProjectExtension = ".uproject";
-				if (Path.GetExtension(FilterOrFile.Name) == UProjectExtension)
-				{
-					UProjectFilePath = FilterOrFile.GetFullPath().Replace('\\', '/');
-					OutIsUnrealProject = true;
-				}
-			}
-			return OutIsUnrealProject;
 		}
 	}
 

@@ -66,6 +66,9 @@ namespace BlueprintSearch
 			}
 		}
 
+		// the window pane created when the command was executed
+		private BlueprintSearchVSWindow window = null;
+
 		/// <summary>
 		/// Initializes the singleton instance of the command.
 		/// </summary>
@@ -92,7 +95,8 @@ namespace BlueprintSearch
 			// Get the instance number 0 of this tool window. This window is single instance so this instance
 			// is actually the only one.
 			// The last flag is set to true so that if the tool window does not exists it will be created.
-			ToolWindowPane window = this.package.FindToolWindow(typeof(BlueprintSearchVSWindow), 0, true);
+
+			window = (BlueprintSearchVSWindow)this.package.FindToolWindow(typeof(BlueprintSearchVSWindow), 0, true);
 			if ((null == window) || (null == window.Frame))
 			{
 				throw new NotSupportedException("Cannot create tool window");
@@ -100,6 +104,11 @@ namespace BlueprintSearch
 
 			IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
 			Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+		}
+
+		public void Shutdown()
+		{
+			window?.Shutdown();
 		}
 	}
 }
