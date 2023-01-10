@@ -42,8 +42,8 @@ namespace BlueprintSearch
 		/// <summary>
 		/// Handles click on the button by displaying a message box.
 		/// </summary>
-		/// <param name="sender">The event sender.</param>
-		/// <param name="e">The event args.</param>
+		/// <param name="InSenderObject">The event sender.</param>
+		/// <param name="InEventArgs">The event args.</param>
 		private void SearchButtonClick(object InSenderObject, RoutedEventArgs InEventArgs)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread("BlueprintSearchWindowControl.SearchButtonClick");
@@ -53,8 +53,8 @@ namespace BlueprintSearch
 		/// <summary>
 		/// Handles click on the button by displaying a message box.
 		/// </summary>
-		/// <param name="sender">The event sender.</param>
-		/// <param name="e">The event args.</param>
+		/// <param name="InSenderObject">The event sender.</param>
+		/// <param name="InEventArgs">The event args.</param>
 		private void CancelButtonClick(object InSenderObject, RoutedEventArgs InEventArgs)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread("BlueprintSearchWindowControl.SearchButtonClick");

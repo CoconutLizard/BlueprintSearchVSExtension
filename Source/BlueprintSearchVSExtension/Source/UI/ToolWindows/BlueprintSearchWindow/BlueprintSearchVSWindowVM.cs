@@ -1,3 +1,7 @@
+// Copyright (C) Coconut Lizard Limited. All rights reserved.
+
+// ---------------------------------------------------------
+
 using BlueprintSearch.Commands.CommandHandlers;
 using BlueprintSearch.Commands.CommandHelpers;
 using Microsoft.VisualStudio.Threading;
@@ -135,18 +139,11 @@ namespace BlueprintSearch
 			{
 				if (PathFinderHelper.FindUEProject(out string UEProjectPath))
 				{
-					if (PathFinderHelper.FindPaths(UEProjectPath) == false)
-					{
-						return false;
-					}
-				}
-				else
-				{
-					return false;
+					return PathFinderHelper.FindPaths(UEProjectPath);
 				}
 			}
 
-			return true;
+			return false;
 		}
 	}
 }

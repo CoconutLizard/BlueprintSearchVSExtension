@@ -19,7 +19,7 @@ namespace BlueprintSearch.Commands.CommandHandlers
 
 		private const string CommandLineArguments = "-NoShaderCompile -SILENT -run=FiB";
 
-		public async Task MakeSearchAsync(string InSearchValue, CancellationToken cancellationToken)
+		public async Task MakeSearchAsync(string InSearchValue, CancellationToken CancellationToken)
 		{
 			Results.Clear();
 
@@ -41,13 +41,13 @@ namespace BlueprintSearch.Commands.CommandHandlers
 				Proc.StartInfo.UseShellExecute = true;
 				Proc.Start();
 
-				while (!Proc.HasExited && !cancellationToken.IsCancellationRequested)
+				while (!Proc.HasExited && !CancellationToken.IsCancellationRequested)
 				{
 					// need to check back periodically to see if the task is finished/cancelled without doing a busy wait.
 					await Task.Delay(20);
 				}
 
-				if (cancellationToken.IsCancellationRequested)
+				if (CancellationToken.IsCancellationRequested)
 				{
 					Proc.Kill();
 					Results = new List<BlueprintJsonObject>() { new BlueprintJsonObject("Search cancelled") };
