@@ -43,8 +43,7 @@ namespace BlueprintSearch
 			await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 			await BlueprintSearchVSWindowCommand.InitializeAsync(this);
 			await InitDTEAsync();
-			await InitSolutionLoaderManagerAsync();
-			Commands.CommandHelpers.PathFinderHelper.FindPaths();
+			await InitSolutionLoaderManagerAsync(cancellationToken);
 		}
 
 		private async Task InitDTEAsync()
@@ -52,11 +51,12 @@ namespace BlueprintSearch
 			Commands.CommandHelpers.PathFinderHelper.DTEService = await GetServiceAsync(typeof(DTE)) as DTE2;
 		}
 
-		private async Task InitSolutionLoaderManagerAsync()
+		private async Task InitSolutionLoaderManagerAsync(CancellationToken cancellationToken)
 		{
+			await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 			//We don't need the solution event, we just need to initialize the Solution service with this Event handlers
 			uint tmp = uint.MaxValue;
-			((IVsSolution) await GetServiceAsync(typeof(SVsSolution))).AdviseSolutionEvents(this, out tmp);
+			((IVsSolution) await GetServiceAsync(typeof(SVsSolution)))?.AdviseSolutionEvents(this, out tmp);
 		}
 
 		public int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
@@ -91,7 +91,6 @@ namespace BlueprintSearch
 
 		public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
 		{
-			Commands.CommandHelpers.PathFinderHelper.FindPaths();
 			return VSConstants.S_OK;
 		}
 
@@ -102,6 +101,8 @@ namespace BlueprintSearch
 
 		public int OnBeforeCloseSolution(object pUnkReserved)
 		{
+			BlueprintSearchVSWindowCommand.Instance?.Shutdown();
+
 			return VSConstants.S_OK;
 		}
 

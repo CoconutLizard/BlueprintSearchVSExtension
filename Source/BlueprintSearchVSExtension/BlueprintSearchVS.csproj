@@ -55,6 +55,7 @@
     <Compile Include="Source\Commands\CommandHelpers\DeserializeHelper.cs" />
     <Compile Include="Config\Properties\AssemblyInfo.cs" />
     <Compile Include="Source\BlueprintSearchVSPackage.cs" />
+    <Compile Include="Source\UI\ToolWindows\BlueprintSearchWindow\BlueprintSearchVSWindowVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

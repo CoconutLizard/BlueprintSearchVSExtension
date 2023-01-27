@@ -22,6 +22,10 @@ namespace BlueprintSearch
 	[Guid("e49092ab-48f9-4fb9-88d4-3cd3e5fcfa36")]
 	public class BlueprintSearchVSWindow : ToolWindowPane
 	{
+		public BlueprintSearchWindowControl WindowControl = null;
+
+		public BlueprintSearchVSWindowVM WindowVM = null;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BlueprintSearchVSWindow"/> class.
 		/// </summary>
@@ -29,10 +33,18 @@ namespace BlueprintSearch
 		{
 			this.Caption = "BlueprintSearchWindow";
 
+			this.WindowVM = new BlueprintSearchVSWindowVM();
+			this.WindowControl = new BlueprintSearchWindowControl(this.WindowVM);
+
 			// This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
 			// we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
 			// the object returned by the Content property.
-			this.Content = new BlueprintSearchWindowControl();
+			this.Content = this.WindowControl;
+		}
+
+		public void Shutdown()
+		{
+			this.WindowVM?.CancelSearch();
 		}
 	}
 }

@@ -4,6 +4,7 @@
 
 using BlueprintSearch.Commands.CommandHandlers;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,24 +18,22 @@ namespace BlueprintSearch
 	/// </summary>
 	public partial class BlueprintSearchWindowControl : UserControl
 	{
+		BlueprintSearchVSWindowVM ViewModel = null;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BlueprintSearchWindowControl"/> class.
 		/// </summary>
-		public BlueprintSearchWindowControl()
+		public BlueprintSearchWindowControl(BlueprintSearchVSWindowVM inViewModel)
 		{
+			ViewModel = inViewModel;
+			this.DataContext = ViewModel;
 			this.InitializeComponent();
-		}
-
-		public void SearchBarGotFocus(object InSenderObject, RoutedEventArgs InEventArgs)
-		{
-			TextBox SearchBox = (TextBox)InSenderObject;
-			SearchBox.Text = string.Empty;
-			SearchBox.GotFocus -= SearchBarGotFocus;
 		}
 
 		private void OnKeyDownHandler(object InSenderObject, KeyEventArgs InEventArgs)
 		{
-			if(InEventArgs.Key == Key.Enter)
+			ThreadHelper.ThrowIfNotOnUIThread("BlueprintSearchWindowControl.OnKeyDownHandler");
+			if (InEventArgs.Key == Key.Enter)
 			{
 				SearchButtonClick(InSenderObject, null);
 			}
@@ -43,15 +42,23 @@ namespace BlueprintSearch
 		/// <summary>
 		/// Handles click on the button by displaying a message box.
 		/// </summary>
-		/// <param name="sender">The event sender.</param>
-		/// <param name="e">The event args.</param>
-		[SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
-		[SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
+		/// <param name="InSenderObject">The event sender.</param>
+		/// <param name="InEventArgs">The event args.</param>
 		private void SearchButtonClick(object InSenderObject, RoutedEventArgs InEventArgs)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread("BlueprintSearchWindowControl.SearchButtonClick");
-			ExecuteSearchHandler ExecuteSearch = new ExecuteSearchHandler();
-			ResultsView.ItemsSource = ExecuteSearch.MakeSearch(SearchValue.Text);
+			ViewModel.HandleSearch();
+		}
+
+		/// <summary>
+		/// Handles click on the button by displaying a message box.
+		/// </summary>
+		/// <param name="InSenderObject">The event sender.</param>
+		/// <param name="InEventArgs">The event args.</param>
+		private void CancelButtonClick(object InSenderObject, RoutedEventArgs InEventArgs)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread("BlueprintSearchWindowControl.SearchButtonClick");
+			ViewModel.CancelSearch();
 		}
 	}
 }
